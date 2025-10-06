@@ -11,5 +11,5 @@ public interface ServiceCenterService {
 	public List<ServiceCenter> getAllServiceCenters();
 	public ServiceCenter getServiceCenterById(Integer id) ;
 	public void deleteServiceCenterById(Integer id) ;
-	public ServiceCenter updateServiceCenterById(ServiceCenter center,Integer id) ;
+	public ServiceCenter updateServiceCenterById(ServiceCenter center, Integer id);
 }
