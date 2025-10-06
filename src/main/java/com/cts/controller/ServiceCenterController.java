@@ -21,7 +21,7 @@ public class ServiceCenterController {
 	
 	@Autowired
 	ServiceCenterService service;
-	@PostMapping("/create")
+	@PostMapping
 	public ServiceCenter createServiceCenter(@RequestBody ServiceCenter center) {
 		ServiceCenter serviceCenter=service.createServiceCenter(center);
 		return serviceCenter;

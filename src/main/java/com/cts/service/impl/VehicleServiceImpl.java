@@ -7,6 +7,9 @@ import com.cts.repository.UsersRepository;
 import com.cts.repository.VehicleRepository;
 import com.cts.service.VehicleService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
  
 @Service
@@ -17,8 +20,8 @@ public class VehicleServiceImpl implements VehicleService {
     private final UsersRepository userRepository;
  
     @Override
-    public Vehicles registerVehicle(Vehicles vehicle) {
-    	Users user=userRepository.findByAuthEmail(vehicle.getUser().getAuth().getEmail());
+    public Vehicles registerVehicle(Vehicles vehicle,String email) {
+    	Users user=userRepository.findByAuthEmail(email);
     	if(user==null) {
     		throw new ResourceNotFoundException("User Doesnot exist: "+vehicle.getUser().getAuth().getEmail());
     	}
@@ -27,15 +30,13 @@ public class VehicleServiceImpl implements VehicleService {
     }
  
     @Override
-    public Vehicles updateVehicle(Integer id, Vehicles updatedVehicle) {
+    public Vehicles updateVehicle(String email,Integer id, Vehicles updatedVehicle) {
         Vehicles existingVehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found with id: " + id));
 
-        // Fetch the managed Users entity from DB using email or ID
-        String email = updatedVehicle.getUser().getAuth().getEmail(); // or use user ID if available
         Users existingUser = userRepository.findByAuthEmail(email);
     	if(existingUser==null) {
-    		throw new ResourceNotFoundException("User Doesnot exist: "+updatedVehicle.getUser().getAuth().getEmail());
+    		throw new ResourceNotFoundException("User Doesnot exist: "+email);
     	}
         existingVehicle.setUser(existingUser);
         existingVehicle.setMake(updatedVehicle.getMake());
@@ -55,8 +56,22 @@ public class VehicleServiceImpl implements VehicleService {
 
  
     @Override
-    public Vehicles viewVehicle(Integer id) {
+    public Vehicles viewVehicle(String email,Integer id) {
+    	Users existingUser = userRepository.findByAuthEmail(email);
+    	if(existingUser==null) {
+    		throw new ResourceNotFoundException("User Doesnot exist: "+email);
+    	}
         return vehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found with id: " + id));
     }
+
+	@Override
+	public List<Vehicles> getAllVehicles() {
+	    List<Vehicles> vehicles = vehicleRepository.findAll();
+	    if (vehicles == null || vehicles.isEmpty()) {
+	        throw new ResourceNotFoundException("No vehicles found. Please add one.");
+	    }
+	    return vehicles;
+	}
+
 }

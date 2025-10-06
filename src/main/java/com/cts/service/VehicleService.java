@@ -1,9 +1,12 @@
 package com.cts.service;
  
+import java.util.List;
+
 import com.cts.entity.Vehicles;
  
 public interface VehicleService {
-    Vehicles registerVehicle(Vehicles vehicle);
-    Vehicles updateVehicle(Integer id, Vehicles vehicle);
-    Vehicles viewVehicle(Integer id);
+    Vehicles registerVehicle(Vehicles vehicle,String email);
+    Vehicles updateVehicle(String email,Integer id, Vehicles vehicle);
+    Vehicles viewVehicle(String email,Integer id);
+    List<Vehicles> getAllVehicles();
 }

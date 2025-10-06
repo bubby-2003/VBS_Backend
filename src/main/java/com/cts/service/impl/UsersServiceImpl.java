@@ -29,20 +29,20 @@ public class UsersServiceImpl implements UsersService {
     }
  
     @Override
-    public Users updateProfile(Integer id, Users updatedUser) {
-        Users existingUser = usersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
-        String existingEmail = existingUser.getAuth().getEmail();
-        String incomingEmail = updatedUser.getAuth().getEmail();
-
-        // Check if incoming email is different
-        if (!existingEmail.equals(incomingEmail)) {
-            throw new RuntimeException("Email update is not allowed. Existing email: " + existingEmail);
-        }
+    public Users updateProfile(String email, Users updatedUser) {
+        Users existingUser = usersRepository.findByAuthEmail(email);
+              //  .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+//
+//        String existingEmail = existingUser.getAuth().getEmail();
+//        String incomingEmail = updatedUser.getAuth().getEmail();
+//
+//        // Check if incoming email is different
+//        if (!existingEmail.equals(incomingEmail)) {
+//            throw new RuntimeException("Email update is not allowed. Existing email: " + existingEmail);
+//        }
 
         // Validate that the email exists in Auth table
-        authRepository.findById(incomingEmail); // Will throw ResourceNotFoundException if not found
+     //   authRepository.findById(incomingEmail); // Will throw ResourceNotFoundException if not found
 
         existingUser.setFirstName(updatedUser.getFirstName());
         existingUser.setLastName(updatedUser.getLastName());
