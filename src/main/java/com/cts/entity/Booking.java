@@ -46,7 +46,8 @@ public class Booking {
 
     private LocalDateTime date;
     private String timeslot;
-    private String status = "Pending";
+    private String feedback;
+    //private String status = "Pending";
 
     @Column(name = "createdAt", updatable = false)
     private LocalDateTime createdAt;
@@ -56,5 +57,12 @@ public class Booking {
 
     public enum VerificationStatus {
         Yes, No, Rejected
+    }
+    
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.Upcoming;
+
+    public enum Status {
+        Upcoming, Completed, Canceled
     }
 }
