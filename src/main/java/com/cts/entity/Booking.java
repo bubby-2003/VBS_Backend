@@ -2,6 +2,8 @@ package com.cts.entity;
 
 import java.time.LocalDateTime;
 
+import com.cts.service.BookingService;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -57,4 +59,6 @@ public class Booking {
     public enum VerificationStatus {
         Yes, No, Rejected
     }
+
+	
 }
