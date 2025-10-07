@@ -27,7 +27,7 @@ public class ServiceType {
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "center_id",nullable = false)
     private ServiceCenter serviceCenter;
 
