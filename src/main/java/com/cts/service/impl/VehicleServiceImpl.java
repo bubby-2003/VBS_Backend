@@ -66,10 +66,10 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
 	@Override
-	public List<Vehicles> getAllVehicles() {
-	    List<Vehicles> vehicles = vehicleRepository.findAll();
-	    if (vehicles == null || vehicles.isEmpty()) {
-	        throw new ResourceNotFoundException("No vehicles found. Please add one.");
+	public List<Vehicles> getAllVehiclesByEmail(String email) {
+	    List<Vehicles> vehicles = vehicleRepository.findByUserAuthEmail(email);
+	    if (vehicles.size()==0) {
+	        throw new ResourceNotFoundException("No vehicles found by Email: "+email+" Please add one.");
 	    }
 	    return vehicles;
 	}

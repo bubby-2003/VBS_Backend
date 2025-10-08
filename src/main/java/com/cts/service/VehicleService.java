@@ -8,5 +8,5 @@ public interface VehicleService {
     Vehicles registerVehicle(Vehicles vehicle,String email);
     Vehicles updateVehicle(String email,Integer id, Vehicles vehicle);
     Vehicles viewVehicle(String email,Integer id);
-    List<Vehicles> getAllVehicles();
+    List<Vehicles> getAllVehiclesByEmail(String email);
 }
