@@ -6,8 +6,8 @@ public interface BookingService {
 
 	public Booking createBooking(Booking booking);
 
-	public Booking getBookingDetailsById(Integer id);
+	public Booking getBookingDetailsById(int id);
 
-	public void cancelBooking(Integer id);
+	public void cancelBooking(int id);
 	
 }

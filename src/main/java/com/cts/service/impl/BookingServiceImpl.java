@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.cts.entity.Booking;
 import com.cts.repository.BookingRepository;
-
+import com.cts.service.BookingService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class BookingServiceImpl{
+public class BookingServiceImpl implements BookingService{
 	
 	@Autowired
 	private BookingRepository brepo;
@@ -23,12 +23,12 @@ public class BookingServiceImpl{
 		return brepo.save(booking);
 	}
 
-	public Booking getDetails(int id){
+	public Booking getBookingDetailsById(int id){
 		return brepo.findById(id).orElse(null);
 
 	}
 	
-	public void cancelbooking(int id) {
+	public void cancelBooking(int id) {
 		 brepo.deleteById(id);
 	}
 	
