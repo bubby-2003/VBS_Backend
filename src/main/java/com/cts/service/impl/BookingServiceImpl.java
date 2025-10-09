@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cts.entity.Booking;
+import com.cts.exception.ResourceNotFoundException;
 import com.cts.repository.BookingRepository;
 import com.cts.service.BookingService;
 
@@ -24,12 +25,21 @@ public class BookingServiceImpl implements BookingService{
 	}
 
 	public Booking getBookingDetailsById(int id){
-		return brepo.findById(id).orElse(null);
+		Booking book = brepo.findById(id).orElse(null);
+		if(book == null) {
+			throw new ResourceNotFoundException("Id not found");
+		}
+		return book;
 
 	}
 	
-	public void cancelBooking(int id) {
+	public boolean cancelBooking(int id) {
+		Booking book = brepo.findById(id).orElse(null);
+		if(book==null)
+			throw new ResourceNotFoundException("Booking "+id+" is not found");
 		 brepo.deleteById(id);
+		 return true;
+
 	}
 	
 }
