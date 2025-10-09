@@ -31,9 +31,11 @@ public class MechanicControllerTest {
 	MechanicService mechSer;
 	
 	@Test
-	void testCreateMechanic() throws Exception {
+	void testCreateMechanic_Success() throws Exception {
 		Mechanic mechanic = new Mechanic("Sidharth" , "4 year experience" , "oil change" , "coimbatore" , "8256789234" , "sidharth@gmail.com");
+		
 		Mockito.when(mechSer.createMechanic(Mockito.any(Mechanic.class))).thenReturn(mechanic);
+		
 		mockMvc.perform(post("/api/mechanic")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(mechanic)))
@@ -42,20 +44,25 @@ public class MechanicControllerTest {
 	}
 	
 	@Test
-	void testGetMechanicByEmail() throws Exception {
+	void testGetMechanicByEmail_Success() throws Exception {
 		String targetEmail = "sidharth@gmail.com";
 		Mechanic mechanic = new Mechanic("Sidharth" , "4 year experience" , "oil change , carbeurator" , "coimbatore" , "8256789234" , targetEmail);
-		Mockito.when(mechSer.getMechanicByEmail("sidharth@gmail.com")).thenReturn(mechanic);
-		mockMvc.perform(get("/api/mechanic/sidharth@gmail.com"))
+		
+		Mockito.when(mechSer.getMechanicByEmail(targetEmail)).thenReturn(mechanic);
+		
+		mockMvc.perform(get("/api/mechanic/{email}", targetEmail))
 		    .andExpect(status().isOk())
-		    .andExpect(jsonPath("$.auth.email").value("sidharth@gmail.com"));
+		    .andExpect(jsonPath("$.auth.email").value(targetEmail));
 	}
+	
 	@Test
-	void testUpdateMechanic() throws Exception {
+	void testUpdateMechanic_Success() throws Exception {
 		String targetEmail = "sidharth@gmail.com";
 		Mechanic updatedMechanic = new Mechanic("Sidharth V" , "6 years experience" , "oil change, tire rotation" , "chennai" , "9999999999" , targetEmail);
+		
 		Mockito.when(mechSer.updateMechanic(Mockito.eq(targetEmail), Mockito.any(Mechanic.class)))
 		       .thenReturn(updatedMechanic);
+		
 		mockMvc.perform(put("/api/mechanic/{email}", targetEmail)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updatedMechanic))) 
@@ -63,5 +70,40 @@ public class MechanicControllerTest {
 				.andExpect(jsonPath("$.name").value("Sidharth V"))
 				.andExpect(jsonPath("$.expertise").value("6 years experience"))
 		        .andExpect(jsonPath("$.auth.email").value(targetEmail));
+	}
+
+	
+	@Test
+	void testCreateMechanic_BadRequest() throws Exception {
+		Mechanic mechanic = new Mechanic("ErrorUser", "1y", "brakes", "mumbai", "1111111111", "duplicate@gmail.com");
+		Mockito.when(mechSer.createMechanic(Mockito.any(Mechanic.class)))
+		       .thenThrow(new RuntimeException("Data integrity violation"));
+		
+		mockMvc.perform(post("/api/mechanic")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(mechanic)))
+				.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	void testGetMechanicByEmail_NotFound() throws Exception {
+		String targetEmail = "nonexistent@gmail.com";
+		Mockito.when(mechSer.getMechanicByEmail(targetEmail)).thenReturn(null);
+		
+		mockMvc.perform(get("/api/mechanic/{email}", targetEmail))
+		    .andExpect(status().isNotFound());
+	}
+	
+	@Test
+	void testUpdateMechanic_NotFound() throws Exception {
+		String targetEmail = "notfound@gmail.com";
+		Mechanic requestBody = new Mechanic("Updater", "1y", "skills", "loc", "1234567890", targetEmail);
+		Mockito.when(mechSer.updateMechanic(Mockito.eq(targetEmail), Mockito.any(Mechanic.class)))
+		       .thenReturn(null);
+		
+		mockMvc.perform(put("/api/mechanic/{email}", targetEmail)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(requestBody)))
+				.andExpect(status().isNotFound());
 	}
 }
