@@ -8,6 +8,6 @@ public interface BookingService {
 
 	public Booking getBookingDetailsById(int id);
 
-	public void cancelBooking(int id);
+	public boolean cancelBooking(int id);
 	
 }

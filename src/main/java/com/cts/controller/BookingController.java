@@ -1,7 +1,15 @@
 package com.cts.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cts.entity.Booking;
 import com.cts.service.BookingService;
@@ -22,8 +30,10 @@ public class BookingController {
         description = "Creates a new booking record with the provided booking details"
     )
     @PostMapping
-    public Booking createBook(@RequestBody Booking booking) {
-        return sbook.createBooking(booking);
+    public ResponseEntity<Booking> createBook(@RequestBody Booking booking) {
+    	
+        booking = sbook.createBooking(booking);
+        return new ResponseEntity<Booking>(booking,HttpStatus.CREATED);
     }
 
     @Operation(
@@ -31,8 +41,9 @@ public class BookingController {
         description = "Fetches booking details by booking ID"
     )
     @GetMapping("/{id}")
-    public Booking viewBook(@PathVariable Integer id) {
-        return sbook.getBookingDetailsById(id);
+    public ResponseEntity<?> viewBook(@PathVariable Integer id) {
+         Booking book = sbook.getBookingDetailsById(id);
+         return new ResponseEntity<Booking>(book,HttpStatus.OK);
     }
 
     @Operation(
@@ -40,8 +51,8 @@ public class BookingController {
         description = "Cancels and deletes a booking by booking ID"
     )
     @DeleteMapping("/{id}")
-    public String deletBook(@PathVariable Integer id) {
-        sbook.cancelBooking(id);
-        return "deleted successfully";
+    public ResponseEntity<String> deletBook(@PathVariable Integer id) {
+        boolean message = sbook.cancelBooking(id);
+        return new ResponseEntity<String>("Booking is deleted", HttpStatus.OK);
     }
 }
