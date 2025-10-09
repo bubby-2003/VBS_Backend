@@ -33,4 +33,16 @@ public class Users {
     public enum Status {
         active, inActive
     }
+
+	public Users(String firstName, String lastName, String address, String phone , String email) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.phone = phone;
+		Auth newAuth = new Auth(); 
+	    newAuth.setEmail(email);
+	    this.auth = newAuth;
+	}
+    
 }
