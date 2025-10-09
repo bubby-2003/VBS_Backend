@@ -16,7 +16,7 @@ import com.cts.mapper.VehicleMapper;
 
 import com.cts.dto.UsersResponseDTO;
 import com.cts.dto.UsersRequestDTO;
-import com.cts.dto.UsersDTO;
+
 import com.cts.entity.Users;
 import com.cts.entity.Vehicles;
 import com.cts.mapper.UsersMapper;
@@ -82,8 +82,9 @@ public class UsersController {
     }
 
     @GetMapping("/{email}/vehicle")
+    @Operation(summary = "View all vehicles by user specific ", description = "Fetches details of  allvehicle belonging to a particular user by  user email")
     public List<VehicleResponseDTO> getAllVehicles(@PathVariable String email) {
-        List<Vehicles> vehicles = vehicleService.getAllVehicles(email);
+        List<Vehicles> vehicles = vehicleService.getAllVehiclesByEmail(email);
         return vehicles.stream()
                        .map(VehicleMapper::toDTO)
                        .toList();
