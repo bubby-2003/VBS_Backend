@@ -2,7 +2,6 @@ package com.cts.entity;
 
 import java.time.LocalDateTime;
 
-import com.cts.service.BookingService;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,7 +48,6 @@ public class Booking {
     private LocalDateTime date;
     private String timeslot;
     private String feedback;
-    //private String status = "Pending";
 
     @Column(name = "createdAt", updatable = false)
     private LocalDateTime createdAt;

@@ -82,12 +82,14 @@ public class VehicleServiceImpl implements VehicleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
     }
 
-    @Override
-    public List<Vehicles> getAllVehicles(String email) {
-        Users user = userRepository.findByAuthEmail(email);
-        if (user == null) {
-            throw new ResourceNotFoundException("User does not exist: " + email);
-        }
+	@Override
+	public List<Vehicles> getAllVehiclesByEmail(String email) {
+	    List<Vehicles> vehicles = vehicleRepository.findByUserAuthEmail(email);
+	    if (vehicles.size()==0) {
+	        throw new ResourceNotFoundException("No vehicles found by Email: "+email+" Please add one.");
+	    }
+	    return vehicles;
+	}
 
         List<Vehicles> vehicles = vehicleRepository.findByUser(user);
         if (vehicles == null || vehicles.isEmpty()) {

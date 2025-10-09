@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "auth")
@@ -20,6 +21,5 @@ public class Auth {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
     private String role;
 }
