@@ -4,9 +4,8 @@ import com.cts.entity.Vehicles.VehicleType;
 import lombok.Data;
 
 @Data
-public class VehicleResponseDTO {
-    private Integer vehicleId;
-    private String email;
+public class VehicleRequestDTO {
+    private String email; 
     private String make;
     private String model;
     private Integer year;

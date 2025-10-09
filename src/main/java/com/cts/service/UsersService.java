@@ -1,9 +1,10 @@
 package com.cts.service;
- 
+
+import com.cts.dto.UsersRequestDTO;
 import com.cts.entity.Users;
- 
+
 public interface UsersService {
-    Users createProfile(Users user);
-    Users updateProfile(String email, Users updatedUser);
+    Users createProfile(UsersRequestDTO userDto);
+    Users updateProfile(String email, UsersRequestDTO updatedUserDto);
     Users viewProfile(String email);
 }

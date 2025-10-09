@@ -1,13 +1,12 @@
 package com.cts.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "auth")
@@ -19,8 +18,8 @@ public class Auth {
     @Id
     @Column(unique = true)
     private String email;
-//    @JsonIgnore
+    @Column(nullable = false)
     private String password;
-//    @JsonIgnore
+    @Column(nullable = false)
     private String role;
 }

@@ -17,5 +17,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGeneral(Exception ex) {
         return new ResponseEntity<>("Error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    @ExceptionHandler(MissingFieldException.class)
+    public ResponseEntity<String> handleMissingField(MissingFieldException ex) {
+        return new ResponseEntity<>("Missing field: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+
+}
 }
  
