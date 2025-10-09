@@ -1,12 +1,14 @@
 package com.cts.service;
- 
-import java.util.List;
 
+import java.util.List;
+import com.cts.dto.VehicleRequestDTO;
 import com.cts.entity.Vehicles;
- 
+
 public interface VehicleService {
-    Vehicles registerVehicle(Vehicles vehicle,String email);
-    Vehicles updateVehicle(String email,Integer id, Vehicles vehicle);
-    Vehicles viewVehicle(String email,Integer id);
+
+    Vehicles registerVehicle(VehicleRequestDTO vehicleDto, String email);
+    Vehicles updateVehicle(String email, Integer id, VehicleRequestDTO vehicleDto);
+    Vehicles viewVehicle(String email, Integer id);
+    List<Vehicles> getAllVehicles(String email);
     List<Vehicles> getAllVehiclesByEmail(String email);
 }

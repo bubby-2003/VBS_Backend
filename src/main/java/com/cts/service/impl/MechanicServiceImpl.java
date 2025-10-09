@@ -1,8 +1,11 @@
 package com.cts.service.impl;
 
+import org.springframework.stereotype.Service;
+
+import com.cts.dto.MechanicRequestDTO;
 import com.cts.entity.Auth;
-import com.cts.entity.Booking;
 import com.cts.entity.Mechanic;
+import com.cts.entity.ServiceCenter;
 import com.cts.exception.ResourceNotFoundException;
 import com.cts.repository.AuthRepository;
 import com.cts.repository.BookingRepository;
@@ -11,55 +14,66 @@ import com.cts.service.MechanicService;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import org.springframework.stereotype.Service;
-
-
 @Service
 @RequiredArgsConstructor
-public class MechanicServiceImpl implements MechanicService{
-	private final AuthRepository authrepo;
-	private final MechanicRepository mechrepo;
-	private final BookingRepository bookrepo;
-	
-	@Override
-	public Mechanic createMechanic(Mechanic mechanic) {
-    	Auth authexisiting = authrepo.findById(mechanic.getAuth().getEmail())
-    			.orElseThrow(()->new ResourceNotFoundException("email not found"));
-    	mechanic.setAuth(authexisiting);
+public class MechanicServiceImpl implements MechanicService {
+
+    private final AuthRepository authrepo;
+    private final MechanicRepository mechrepo;
+    private final BookingRepository bookrepo;
+
+    @Override
+    public Mechanic createMechanic(MechanicRequestDTO mechanicDto) {
+        Auth auth = authrepo.findById(mechanicDto.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+
+        Mechanic mechanic = new Mechanic();
+        mechanic.setAuth(auth);
+        mechanic.setName(mechanicDto.getName());
+        mechanic.setExpertise(mechanicDto.getExpertise());
+        mechanic.setSkills(mechanicDto.getSkills());
+        mechanic.setAvailability(mechanicDto.getAvailability());
+        mechanic.setRating(mechanicDto.getRating());
+        mechanic.setIsVerified(mechanicDto.getIsVerified());
+        mechanic.setStatus(mechanicDto.getStatus());
+        mechanic.setAddress(mechanicDto.getAddress());
+        mechanic.setPhone(mechanicDto.getPhone());
+
+        if (mechanicDto.getCenterId() != null) {
+            mechanic.setServiceCenter(new ServiceCenter(mechanicDto.getCenterId()));
+        }
+
         return mechrepo.save(mechanic);
     }
-	@Override
-	public Mechanic updateMechanic(String email, Mechanic updatedMechanic) {
+
+    @Override
+    public Mechanic updateMechanic(String email, MechanicRequestDTO mechanicDto) {
         Mechanic existing = mechrepo.findByAuthEmail(email);
         if (existing == null) throw new ResourceNotFoundException("Mechanic not found");
 
-       existing.setName(updatedMechanic.getName());
-       existing.setExpertise(updatedMechanic.getExpertise());
-       existing.setSkills(updatedMechanic.getSkills());
-       existing.setPhone(updatedMechanic.getPhone());
-       existing.setAddress(updatedMechanic.getAddress());
-       return mechrepo.save(existing);
-   }
-	@Override
-	public Mechanic getMechanicByEmail(String email) {
-        return mechrepo.findByAuthEmail(email);
+        existing.setName(mechanicDto.getName());
+        existing.setExpertise(mechanicDto.getExpertise());
+        existing.setSkills(mechanicDto.getSkills());
+        existing.setAvailability(mechanicDto.getAvailability());
+        existing.setRating(mechanicDto.getRating());
+        existing.setIsVerified(mechanicDto.getIsVerified());
+        existing.setStatus(mechanicDto.getStatus());
+        existing.setAddress(mechanicDto.getAddress());
+        existing.setPhone(mechanicDto.getPhone());
+
+        if (mechanicDto.getCenterId() != null) {
+            existing.setServiceCenter(new ServiceCenter(mechanicDto.getCenterId()));
+        }
+
+        return mechrepo.save(existing);
     }
-	@Override
-	public List<Booking> getAppointments(String email, Integer bookingId) {
+
+    @Override
+    public Mechanic getMechanicByEmail(String email) {
         Mechanic mechanic = mechrepo.findByAuthEmail(email);
         if (mechanic == null) throw new ResourceNotFoundException("Mechanic not found");
-
-        return bookrepo.findByMechanicAndBookingId(mechanic, bookingId);
+        return mechanic;
     }
-	@Override
-	public Booking updateAppointmentStatus(Integer bookingId, String status) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public List<String> getFeedback(String email) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
+    
 }

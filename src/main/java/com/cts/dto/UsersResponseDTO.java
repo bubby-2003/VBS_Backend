@@ -4,7 +4,7 @@ import com.cts.entity.Users.Status;
 import lombok.Data;
 
 @Data
-public class UsersDTO {
+public class UsersResponseDTO {
     private Integer id;
     private String email;
     private String firstName;

@@ -1,5 +1,21 @@
 package com.cts.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.cts.dto.VehicleRequestDTO;
+import com.cts.dto.VehicleResponseDTO;
+import com.cts.mapper.VehicleMapper;
+
+import com.cts.dto.UsersResponseDTO;
+import com.cts.dto.UsersRequestDTO;
 import com.cts.dto.UsersDTO;
 import com.cts.entity.Users;
 import com.cts.entity.Vehicles;
@@ -7,9 +23,7 @@ import com.cts.mapper.UsersMapper;
 import com.cts.service.UsersService;
 import com.cts.service.VehicleService;
 
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,46 +42,52 @@ public class UsersController {
 
     @Operation(summary = "Create user profile", description = "Registers a new user profile with details like name, email, and contact info")
     @PostMapping
-    public UsersDTO createProfile(@RequestBody Users user) {
-        Users savedUser = usersService.createProfile(user);
+    public UsersResponseDTO createProfile(@RequestBody UsersRequestDTO userDto) {
+        Users savedUser = usersService.createProfile(userDto);
         return UsersMapper.toDTO(savedUser);
     }
 
     @Operation(summary = "Update user profile", description = "Updates an existing user profile using their email as the identifier")
     @PutMapping("/{email}")
-    public UsersDTO updateProfile(@PathVariable String email, @RequestBody Users user) {
-        Users updatedUser = usersService.updateProfile(email, user);
+    public UsersResponseDTO updateProfile(@PathVariable String email, @RequestBody UsersRequestDTO userDto) {
+        Users updatedUser = usersService.updateProfile(email, userDto);
         return UsersMapper.toDTO(updatedUser);
     }
 
     @Operation(summary = "View user profile", description = "Fetches details of a user profile by email")
     @GetMapping("/{email}")
-    public UsersDTO viewProfile(@PathVariable String email) {
+    public UsersResponseDTO viewProfile(@PathVariable String email) {
         Users user = usersService.viewProfile(email);
         return UsersMapper.toDTO(user);
     }
-
     @Operation(summary = "Register vehicle", description = "Registers a new vehicle under a user’s profile")
     @PostMapping("/{email}/vehicle")
-    public Vehicles registerVehicle(@RequestBody Vehicles vehicle, @PathVariable String email) {
-        return vehicleService.registerVehicle(vehicle, email);
+    public VehicleResponseDTO registerVehicle(@RequestBody VehicleRequestDTO vehicleDto, @PathVariable String email) {
+        Vehicles savedVehicle = vehicleService.registerVehicle(vehicleDto, email);
+        return VehicleMapper.toDTO(savedVehicle);
     }
-
     @Operation(summary = "Update vehicle", description = "Updates details of a specific vehicle belonging to a user")
     @PutMapping("/{email}/vehicle/{id}")
-    public Vehicles updateVehicle(@PathVariable String email, @PathVariable Integer id, @RequestBody Vehicles vehicle) {
-        return vehicleService.updateVehicle(email, id, vehicle);
-    }
-
-    @Operation(summary = "Get all vehicles", description = "Fetches all vehicles registered under all users (note: not filtered by email here)")
-    @GetMapping("/{email}/vehicle")
-    public List<Vehicles> getAllVehicles(@PathVariable String email) {
-        return vehicleService.getAllVehiclesByEmail(email);
+    public VehicleResponseDTO updateVehicle(@PathVariable String email, @PathVariable Integer id, @RequestBody VehicleRequestDTO vehicleDto) {
+        Vehicles updatedVehicle = vehicleService.updateVehicle(email, id, vehicleDto);
+        return VehicleMapper.toDTO(updatedVehicle);
     }
 
     @Operation(summary = "View vehicle by ID", description = "Fetches details of a specific vehicle belonging to a user by vehicle ID")
     @GetMapping("/{email}/vehicle/{id}")
-    public Vehicles viewVehicle(@PathVariable String email, @PathVariable Integer id) {
-        return vehicleService.viewVehicle(email, id);
+    public VehicleResponseDTO viewVehicle(@PathVariable String email, @PathVariable Integer id) {
+        Vehicles vehicle = vehicleService.viewVehicle(email, id);
+        return VehicleMapper.toDTO(vehicle);
+
     }
+
+    @GetMapping("/{email}/vehicle")
+    public List<VehicleResponseDTO> getAllVehicles(@PathVariable String email) {
+        List<Vehicles> vehicles = vehicleService.getAllVehicles(email);
+        return vehicles.stream()
+                       .map(VehicleMapper::toDTO)
+                       .toList();
+    }
+
+
 }

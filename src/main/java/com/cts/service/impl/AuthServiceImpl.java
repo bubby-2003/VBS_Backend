@@ -1,13 +1,15 @@
 package com.cts.service.impl;
  
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.cts.entity.Auth;
+import com.cts.exception.MissingFieldException;
 import com.cts.exception.ResourceNotFoundException;
 import com.cts.repository.AuthRepository;
 import com.cts.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
- 
-import java.util.List;
  
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -27,17 +29,31 @@ public class AuthServiceImpl implements AuthService {
     }
  
     @Override
-    public String create(Auth auth) {			
+    public String create(Auth auth) {
         try {
-            if (authRepository.existsById(auth.getEmail())) {
-                return "Registration failed: Email already exists";
+          
+            if (auth.getEmail() == null || auth.getEmail().trim().isEmpty()) {
+                throw new MissingFieldException("Email is required");
             }
+            if (auth.getPassword() == null || auth.getPassword().trim().isEmpty()) {
+                throw new MissingFieldException("Password is required");
+            }
+            if (auth.getRole() == null || auth.getRole().trim().isEmpty()) {
+                throw new MissingFieldException("Role is required");
+            }
+
+           
+            if (authRepository.existsById(auth.getEmail())) {
+                throw new MissingFieldException("Registration failed: Email already exists");
+            }
+
             authRepository.save(auth);
             return "Registered successfully";
         } catch (Exception e) {
-            return "Unable to register: " + e.getMessage();
+            throw new RuntimeException("Unable to register: " + e.getMessage());
         }
     }
+
  
     @Override
     public Auth update(String email, Auth updatedAuth) {

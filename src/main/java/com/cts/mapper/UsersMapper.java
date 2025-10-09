@@ -1,12 +1,12 @@
 package com.cts.mapper;
 
-import com.cts.dto.UsersDTO;
+import com.cts.dto.UsersResponseDTO;
 import com.cts.entity.Users;
 
 public class UsersMapper {
 
-    public static UsersDTO toDTO(Users user) {
-        UsersDTO dto = new UsersDTO();
+    public static UsersResponseDTO toDTO(Users user) {
+        UsersResponseDTO dto = new UsersResponseDTO();
         dto.setId(user.getId());
         dto.setEmail(user.getAuth().getEmail());
         dto.setFirstName(user.getFirstName());

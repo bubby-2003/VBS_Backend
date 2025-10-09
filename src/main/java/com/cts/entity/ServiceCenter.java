@@ -30,6 +30,12 @@ public class ServiceCenter {
     public enum Rating {
         Excellent, Good, Average, Poor
     }
+    
+
+    public ServiceCenter(Integer servicecenterId) {
+           this.servicecenterId = servicecenterId;
+       }
+
 
 	
 }
