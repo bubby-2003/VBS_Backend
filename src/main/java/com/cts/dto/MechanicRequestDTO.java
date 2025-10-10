@@ -4,9 +4,14 @@ import com.cts.entity.Mechanic.Availability;
 import com.cts.entity.Mechanic.Rating;
 import com.cts.entity.Mechanic.VerificationStatus;
 import com.cts.entity.Mechanic.Status;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MechanicRequestDTO {
     private String email;
     private Integer centerId;

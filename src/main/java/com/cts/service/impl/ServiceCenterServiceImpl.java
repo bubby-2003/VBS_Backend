@@ -2,6 +2,7 @@ package com.cts.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cts.entity.ServiceCenter;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ServiceCenterServiceImpl implements ServiceCenterService {
-
+	@Autowired
     private final ServiceCenterRepository centerRepository;
 
     @Override

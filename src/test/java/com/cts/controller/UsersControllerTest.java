@@ -1,171 +1,246 @@
-//package com.cts.controller;
-//
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-//
-//import java.util.Arrays;
-//import java.util.List;
-//
-//import org.junit.jupiter.api.Test;
-//import org.mockito.Mockito;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.context.bean.override.mockito.MockitoBean;
-//import org.springframework.test.web.servlet.MockMvc;
-//import com.cts.entity.Users;
-//import com.cts.entity.Vehicles;
-//import com.cts.entity.Vehicles.VehicleType;
-//import com.cts.service.UsersService;
-//import com.cts.service.VehicleService;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//
-//@WebMvcTest(controllers = UsersController.class)
-//public class UsersControllerTest {
-//
-//	@Autowired
-//	MockMvc mockMvc;
-//	
-//	@Autowired
-//	private ObjectMapper objectMapper;
-//	
-//	@MockitoBean
-//	UsersService userser;
-//	
-//	@MockitoBean
-//    VehicleService vehicleService;
-//	
-//	private Vehicles createTestVehicle(Integer id) {
-//        Vehicles vehicle = new Vehicles(
-//            id, 
-//            new Users(),
-//            "Maruti", 
-//            "Swift", 
-//            2021, 
-//            "KA01XX1234", 
-//            VehicleType.car, 
-//            "1.2L Petrol", 
-//            "Yes", 
-//            "4", 
-//            "Yes", 
-//            "Manual", 
-//            "Petrol"
-//        );
-//        return vehicle;
-//    }
-//	
-//	@Test
-//	void testCreateProfile_Success() throws Exception{
-//	    String targetEmail = "lankesh@ramayan.com";
-//	    Users user = new Users("Lankesh" , "Ravan" , "Sri Lanka" , "1111111111" , targetEmail);
-//	    Mockito.when(userser.createProfile(Mockito.any(Users.class))).thenReturn(user);
-//	    
-//	    mockMvc.perform(post("/api/users")
-//	            .contentType(MediaType.APPLICATION_JSON)
-//	            .content(objectMapper.writeValueAsString(user)))
-//	            .andExpect(status().isOk()) 
-//	            
-//	            .andExpect(jsonPath("$.email").value(targetEmail));
-//	}
-//	@Test
-//	void testGetUsersByEmail_Success() throws Exception {
-//		String targetEmail = "lankesh@ramayan.com";
-//		Users user = new Users("Lankesh" , "Ravan" , "Sri Lanka" , "1111111111" , targetEmail);
-//		
-//		Mockito.when(userser.viewProfile(targetEmail)).thenReturn(user);
-//		
-//		mockMvc.perform(get("/api/users/{email}", targetEmail))
-//		    .andExpect(status().isOk())
-//		    .andExpect(jsonPath("$.email").value(targetEmail));
-//	}
-//	@Test
-//	void testUpdateUsers_Success() throws Exception {
-//	    String targetEmail = "lankesh@ramayan.com";
-//	    Users updatedUser = new Users("Lankesh" , "Ravan" , "Sri Lanka" , "1111111119" , targetEmail);
-//	    Mockito.when(userser.updateProfile(Mockito.eq(targetEmail), Mockito.any(Users.class)))
-//	           .thenReturn(updatedUser);
-//
-//	    mockMvc.perform(put("/api/users/{email}", targetEmail)
-//	            .contentType(MediaType.APPLICATION_JSON)
-//	            .content(objectMapper.writeValueAsString(updatedUser)))
-//	            .andExpect(status().isOk())
-//	            .andExpect(jsonPath("$.phone").value("1111111119"))
-//	            .andExpect(jsonPath("$.email").value(targetEmail));
-//	}
-//	@Test
-//    void testRegisterVehicle_Success() throws Exception {
-//		String targetEmail = "lankesh@ramayan.com";
-//        Vehicles vehicleToRegister = createTestVehicle(null);
-//        Vehicles savedVehicle = createTestVehicle(1);
-//
-//        Mockito.when(vehicleService.registerVehicle(Mockito.any(Vehicles.class), Mockito.eq(targetEmail)))
-//               .thenReturn(savedVehicle);
-//
-//        mockMvc.perform(post("/api/users/{email}/vehicle", targetEmail)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(vehicleToRegister)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.vehicleId").value(1))
-//                .andExpect(jsonPath("$.make").value("Maruti"))
-//                .andExpect(jsonPath("$.registrationNumber").value("KA01XX1234"));
-//    }
-//
-//    @Test
-//    void testUpdateVehicle_Success() throws Exception {
-//    	String targetEmail = "lankesh@ramayan.com";
-//        Integer vehicleId = 1;
-//        Vehicles vehicleToUpdate = createTestVehicle(vehicleId);
-//        vehicleToUpdate.setRegistrationNumber("DL09YY9876");
-//        
-//        Mockito.when(vehicleService.updateVehicle(
-//                Mockito.eq(targetEmail), 
-//                Mockito.eq(vehicleId), 
-//                Mockito.any(Vehicles.class)))
-//               .thenReturn(vehicleToUpdate);
-//
-//        mockMvc.perform(put("/api/users//{email}/vehicle/{id}", targetEmail, vehicleId)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(vehicleToUpdate)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.vehicleId").value(vehicleId))
-//                .andExpect(jsonPath("$.registrationNumber").value("DL09YY9876"));
-//    }
-//
-//    @Test
-//    void testGetAllVehiclesByEmail_Success() throws Exception {
-//    	String targetEmail = "lankesh@ramayan.com";
-//        Vehicles vehicle1 = createTestVehicle(1);
-//        Vehicles vehicle2 = createTestVehicle(2);
-//        vehicle2.setModel("Dzire");
-//        List<Vehicles> vehiclesList = Arrays.asList(vehicle1, vehicle2);
-//
-//        Mockito.when(vehicleService.getAllVehiclesByEmail(targetEmail))
-//               .thenReturn(vehiclesList);
-//
-//        mockMvc.perform(get("/api/users/{email}/vehicle", targetEmail))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$").isArray())
-//                .andExpect(jsonPath("$.length()").value(2))
-//                .andExpect(jsonPath("$[0].vehicleId").value(1))
-//                .andExpect(jsonPath("$[1].model").value("Dzire"));
-//    }
-//
-//    @Test
-//    void testViewVehicleById_Success() throws Exception {
-//    	String targetEmail = "lankesh@ramayan.com";
-//        Integer vehicleId = 1;
-//        Vehicles vehicle = createTestVehicle(vehicleId);
-//
-//        Mockito.when(vehicleService.viewVehicle(Mockito.eq(targetEmail), Mockito.eq(vehicleId)))
-//               .thenReturn(vehicle);
-//
-//        mockMvc.perform(get("/api/users/{email}/vehicle/{id}",targetEmail, vehicleId))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.vehicleId").value(vehicleId))
-//                .andExpect(jsonPath("$.make").value("Maruti"))
-//                .andExpect(jsonPath("$.year").value(2021));
-//    }
-//}
+package com.cts.controller;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.cts.dto.UsersRequestDTO;
+import com.cts.dto.UsersResponseDTO;
+import com.cts.dto.VehicleRequestDTO;
+import com.cts.dto.VehicleResponseDTO;
+import com.cts.entity.Users.Status;
+import com.cts.entity.Users;
+import com.cts.entity.Vehicles;
+import com.cts.entity.Vehicles.VehicleType;
+import com.cts.mapper.UsersMapper;
+import com.cts.mapper.VehicleMapper;
+import com.cts.service.UsersService;
+import com.cts.service.VehicleService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@WebMvcTest(UsersController.class)
+public class UsersControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private UsersService usersService;
+
+    @MockBean
+    private VehicleService vehicleService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private UsersRequestDTO createUserRequestDTO() {
+        UsersRequestDTO dto = new UsersRequestDTO();
+        dto.setEmail("user@test.com");
+        dto.setFirstName("John");
+        dto.setLastName("Doe");
+        dto.setAddress("123 Street");
+        dto.setPhone("9876543210");
+        dto.setStatus(Status.active);
+        return dto;
+    }
+
+    private UsersResponseDTO createUserResponseDTO() {
+        UsersResponseDTO dto = new UsersResponseDTO();
+        dto.setId(1);
+        dto.setEmail("user@test.com");
+        dto.setFirstName("John");
+        dto.setLastName("Doe");
+        dto.setAddress("123 Street");
+        dto.setPhone("9876543210");
+        dto.setStatus(Status.active); 
+        return dto;
+    }
+
+    private VehicleRequestDTO createVehicleRequestDTO() {
+        VehicleRequestDTO dto = new VehicleRequestDTO();
+        dto.setEmail("user@test.com");
+        dto.setMake("Toyota");
+        dto.setModel("Corolla");
+        dto.setYear(2022);
+        dto.setRegistrationNumber("TN01AB1234");
+        dto.setVehicleType(VehicleType.car);
+        dto.setEngine("Petrol");
+        dto.setAbs("Yes");
+        dto.setDoors("4");
+        dto.setAc("Yes");
+        dto.setTransmission("Manual");
+        dto.setFuel("Petrol");
+        return dto;
+    }
+
+    private VehicleResponseDTO createVehicleResponseDTO() {
+        VehicleResponseDTO dto = new VehicleResponseDTO();
+        dto.setVehicleId(1);
+        dto.setEmail("user@test.com");
+        dto.setMake("Toyota");
+        dto.setModel("Corolla");
+        dto.setYear(2022);
+        dto.setRegistrationNumber("TN01AB1234");
+        dto.setVehicleType(VehicleType.car);
+        dto.setEngine("Petrol");
+        dto.setAbs("Yes");
+        dto.setDoors("4");
+        dto.setAc("Yes");
+        dto.setTransmission("Manual");
+        dto.setFuel("Petrol");
+        return dto;
+    }
+
+    @Test
+    void testCreateUserProfile_Success() throws Exception {
+        UsersRequestDTO requestDTO = createUserRequestDTO();
+        UsersResponseDTO responseDTO = createUserResponseDTO();
+        Users user = new Users();
+
+        Mockito.when(usersService.createProfile(any(UsersRequestDTO.class))).thenReturn(user);
+
+        try (MockedStatic<UsersMapper> mockedMapper = Mockito.mockStatic(UsersMapper.class)) {
+            mockedMapper.when(() -> UsersMapper.toDTO(user)).thenReturn(responseDTO);
+
+            mockMvc.perform(post("/api/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDTO)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.email").value("user@test.com"))
+                    .andExpect(jsonPath("$.firstName").value("John"));
+        }
+    }
+
+    @Test
+    void testUpdateUserProfile_Success() throws Exception {
+        String email = "user@test.com";
+        UsersRequestDTO requestDTO = createUserRequestDTO();
+        UsersResponseDTO responseDTO = createUserResponseDTO();
+        Users user = new Users();
+
+        Mockito.when(usersService.updateProfile(eq(email), any(UsersRequestDTO.class))).thenReturn(user);
+
+        try (MockedStatic<UsersMapper> mockedMapper = Mockito.mockStatic(UsersMapper.class)) {
+            mockedMapper.when(() -> UsersMapper.toDTO(user)).thenReturn(responseDTO);
+
+            mockMvc.perform(put("/api/users/{email}", email)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDTO)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.email").value(email))
+                    .andExpect(jsonPath("$.lastName").value("Doe"));
+        }
+    }
+
+    @Test
+    void testViewUserProfile_Success() throws Exception {
+        String email = "user@test.com";
+        UsersResponseDTO responseDTO = createUserResponseDTO();
+        Users user = new Users();
+
+        Mockito.when(usersService.viewProfile(email)).thenReturn(user);
+
+        try (MockedStatic<UsersMapper> mockedMapper = Mockito.mockStatic(UsersMapper.class)) {
+            mockedMapper.when(() -> UsersMapper.toDTO(user)).thenReturn(responseDTO);
+
+            mockMvc.perform(get("/api/users/{email}", email))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.email").value(email))
+                    .andExpect(jsonPath("$.address").value("123 Street"));
+        }
+    }
+
+    @Test
+    void testRegisterVehicle_Success() throws Exception {
+        String email = "user@test.com";
+        VehicleRequestDTO requestDTO = createVehicleRequestDTO();
+        VehicleResponseDTO responseDTO = createVehicleResponseDTO();
+        Vehicles vehicle = new Vehicles();
+
+        Mockito.when(vehicleService.registerVehicle(any(VehicleRequestDTO.class), eq(email))).thenReturn(vehicle);
+
+        try (MockedStatic<VehicleMapper> mockedMapper = Mockito.mockStatic(VehicleMapper.class)) {
+            mockedMapper.when(() -> VehicleMapper.toDTO(vehicle)).thenReturn(responseDTO);
+
+            mockMvc.perform(post("/api/users/{email}/vehicle", email)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDTO)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.make").value("Toyota"))
+                    .andExpect(jsonPath("$.registrationNumber").value("TN01AB1234"));
+        }
+    }
+
+    @Test
+    void testUpdateVehicle_Success() throws Exception {
+        String email = "user@test.com";
+        Integer id = 1;
+        VehicleRequestDTO requestDTO = createVehicleRequestDTO();
+        VehicleResponseDTO responseDTO = createVehicleResponseDTO();
+        Vehicles vehicle = new Vehicles();
+
+        Mockito.when(vehicleService.updateVehicle(eq(email), eq(id), any(VehicleRequestDTO.class))).thenReturn(vehicle);
+
+        try (MockedStatic<VehicleMapper> mockedMapper = Mockito.mockStatic(VehicleMapper.class)) {
+            mockedMapper.when(() -> VehicleMapper.toDTO(vehicle)).thenReturn(responseDTO);
+
+            mockMvc.perform(put("/api/users/{email}/vehicle/{id}", email, id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDTO)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.model").value("Corolla"));
+        }
+    }
+
+    @Test
+    void testViewVehicleById_Success() throws Exception {
+        String email = "user@test.com";
+        Integer id = 1;
+        VehicleResponseDTO responseDTO = createVehicleResponseDTO();
+        Vehicles vehicle = new Vehicles();
+
+        Mockito.when(vehicleService.viewVehicle(email, id)).thenReturn(vehicle);
+
+        try (MockedStatic<VehicleMapper> mockedMapper = Mockito.mockStatic(VehicleMapper.class)) {
+            mockedMapper.when(() -> VehicleMapper.toDTO(vehicle)).thenReturn(responseDTO);
+
+            mockMvc.perform(get("/api/users/{email}/vehicle/{id}", email, id))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.vehicleId").value(1))
+                    .andExpect(jsonPath("$.fuel").value("Petrol"));
+        }
+    }
+
+    @Test
+    void testGetAllVehiclesByUser_Success() throws Exception {
+        String email = "user@test.com";
+        Vehicles vehicle = new Vehicles();
+        VehicleResponseDTO responseDTO = createVehicleResponseDTO();
+
+        Mockito.when(vehicleService.getAllVehiclesByEmail(email)).thenReturn(List.of(vehicle));
+
+        try (MockedStatic<VehicleMapper> mockedMapper = Mockito.mockStatic(VehicleMapper.class)) {
+            mockedMapper.when(() -> VehicleMapper.toDTO(vehicle)).thenReturn(responseDTO);
+
+            mockMvc.perform(get("/api/users/{email}/vehicle", email))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].make").value("Toyota"))
+                    .andExpect(jsonPath("$[0].vehicleType").value("car"));
+        }
+    }
+}

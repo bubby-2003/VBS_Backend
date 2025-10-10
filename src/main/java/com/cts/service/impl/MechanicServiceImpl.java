@@ -1,5 +1,6 @@
 package com.cts.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cts.dto.MechanicRequestDTO;
@@ -18,8 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MechanicServiceImpl implements MechanicService {
 
+	@Autowired
     private final AuthRepository authrepo;
+	@Autowired
     private final MechanicRepository mechrepo;
+	@Autowired
     private final BookingRepository bookrepo;
 
     @Override

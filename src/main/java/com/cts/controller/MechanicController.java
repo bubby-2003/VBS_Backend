@@ -51,26 +51,5 @@ public class MechanicController {
         return new ResponseEntity<>(MechanicMapper.toDTO(mechanic), HttpStatus.OK);
     }
 
-    
-//    @GetMapping("/{email}/appointments/{id}")
-//    public ResponseEntity<List<Booking>> getAppointments(@PathVariable String email, @PathVariable Integer id) {
-//        return ResponseEntity.ok(mechanicService.getAppointments(email, id));
-//    }
-    
-//    @PutMapping("/{email}/appointments/{id}")
-//    public ResponseEntity<Booking> updateAppointmentStatus(@PathVariable String email, @PathVariable Integer id, @RequestBody Booking.Status status) {
-//        Booking updated = mechanicService.updateAppointmentStatus(email, id, status);
-//        return ResponseEntity.ok(updated);
-//    }
-//    
-//    @GetMapping("/{email}/feedback/{id}")
-//    public ResponseEntity<String> getFeedback(@PathVariable String email, @PathVariable Integer id) {
-//        return ResponseEntity.ok(mechanicService.getFeedback(email, id));
-//    }
-//    
-//    @PutMapping("/{email}/availability")
-//    public ResponseEntity<Mechanic> updateAvailability(@PathVariable String email, @RequestBody Mechanic.Availability availability) {
-//        Mechanic updated = mechanicService.updateAvailability(email, availability);
-//        return ResponseEntity.ok(updated);
-//    }  
+     
 }

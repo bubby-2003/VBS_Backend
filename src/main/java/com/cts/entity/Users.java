@@ -19,7 +19,8 @@ public class Users {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="email",referencedColumnName = "email",unique = true)
-    private Auth auth;   
+    private Auth auth;  
+    
     private String firstName;
     private String lastName;
     private String address;
