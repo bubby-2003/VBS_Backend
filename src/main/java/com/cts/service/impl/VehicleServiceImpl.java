@@ -2,6 +2,7 @@ package com.cts.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cts.dto.VehicleRequestDTO;
@@ -18,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VehicleServiceImpl implements VehicleService {
 
+	@Autowired
     private final VehicleRepository vehicleRepository;
+	@Autowired
     private final UsersRepository userRepository;
 
     @Override

@@ -24,20 +24,20 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
 
 	@Override
 	public ServiceType addServiceType(ServiceType serviceType, Integer serviceCenterId) {
-	    // Fetch the parent ServiceCenter
+	
 	    ServiceCenter center = centerRepository.findById(serviceCenterId)
 	            .orElseThrow(() -> new ResourceNotFoundException(
 	                    "Service Center not found with Id: " + serviceCenterId));
 
-	    // Attach the parent to the child
+	  
 	    serviceType.setServiceCenter(center);
 
-	    // Optionally normalize status if null
+	  
 	    if (serviceType.getStatus() == null) {
-	        serviceType.setStatus(ServiceType.Status.active); // default
+	        serviceType.setStatus(ServiceType.Status.active); 
 	    }
 
-	    // Save and return
+	 
 	    return typeRepository.save(serviceType);
 	}
 
@@ -53,7 +53,7 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
 
 	@Override
 	public ServiceType getServiceTypeById(Integer serviceTypeId,Integer serviceCenterId) {
-		// TODO Auto-generated method stub
+		
 		ServiceType serviceType=typeRepository.findByServiceTypeIdAndServiceCenterId(serviceTypeId, serviceCenterId)
 				.orElseThrow(()->new ResourceNotFoundException("Service Type not found By Id: "+serviceTypeId+" With Service Center Id: "+serviceCenterId));
 		return serviceType;
@@ -61,7 +61,7 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
 
 	@Override
 	public boolean deleteServiceTypeById(Integer serviceTypeId,Integer serviceCenterId) {
-		// TODO Auto-generated method stub
+	
 		ServiceType serviceType = typeRepository.findByServiceTypeIdAndServiceCenterId(serviceTypeId, serviceCenterId)
 				.orElseThrow(()->new ResourceNotFoundException("Service Type not found By Id: "+serviceTypeId+" With Service Center Id: "+serviceCenterId));
 		typeRepository.delete(serviceType);
