@@ -45,7 +45,7 @@ public class Booking {
     @JoinColumn(name = "center_id")
     private ServiceCenter serviceCenter;
 
-    private LocalDateTime date;
+    private LocalDateTime bookingDate;
     private String timeslot;
     private String feedback;
 

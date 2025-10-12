@@ -75,7 +75,9 @@ public class MechanicServiceImpl implements MechanicService {
     @Override
     public Mechanic getMechanicByEmail(String email) {
         Mechanic mechanic = mechrepo.findByAuthEmail(email);
-        if (mechanic == null) throw new ResourceNotFoundException("Mechanic not found");
+        if (mechanic == null) {
+            throw new ResourceNotFoundException("Mechanic not found");
+        }
         return mechanic;
     }
 

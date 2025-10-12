@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/mechanic")
 @Tag(name = "Mechanic Management",description = "Create Web Api's for Mechanic Operations")
@@ -46,7 +47,7 @@ public class MechanicController {
         description = "Fetches mechanic details using their email address"
     )
     @GetMapping("/{email}")
-    public ResponseEntity<MechanicResponseDTO> getMechanic(@PathVariable String email) {
+    public ResponseEntity<MechanicResponseDTO> getMechanic(@PathVariable @Valid String email) {
         Mechanic mechanic = mechanicService.getMechanicByEmail(email);
         return new ResponseEntity<>(MechanicMapper.toDTO(mechanic), HttpStatus.OK);
     }
