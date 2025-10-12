@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cts.dto.BookingRequestDTO; 
+import com.cts.dto.BookingResponseDTO;
 import com.cts.entity.Booking;
+import com.cts.mapper.BookingMapper;
 import com.cts.service.BookingService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/bookings")
-@Tag(name = "Booking Management",description = "Create Web Api's for Making Appointments")
+@Tag(name = "Booking Management", description = "Create Web Api's for Making Appointments")
 public class BookingController {
 
     @Autowired
@@ -30,10 +33,12 @@ public class BookingController {
         description = "Creates a new booking record with the provided booking details"
     )
     @PostMapping
-    public ResponseEntity<Booking> createBook(@RequestBody Booking booking) {
-    	
-        booking = sbook.createBooking(booking);
-        return new ResponseEntity<Booking>(booking,HttpStatus.CREATED);
+    public ResponseEntity<BookingResponseDTO> createBook(@RequestBody BookingRequestDTO bookingDto) {
+        Booking booking = sbook.createBooking(bookingDto);
+        
+        BookingResponseDTO responseDto = BookingMapper.toDTO(booking);
+        
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @Operation(
@@ -41,18 +46,27 @@ public class BookingController {
         description = "Fetches booking details by booking ID"
     )
     @GetMapping("/{id}")
-    public ResponseEntity<?> viewBook(@PathVariable Integer id) {
+    public ResponseEntity<BookingResponseDTO> viewBook(@PathVariable Integer id) {
+      
          Booking book = sbook.getBookingDetailsById(id);
-         return new ResponseEntity<Booking>(book,HttpStatus.OK);
+         
+         BookingResponseDTO responseDto = BookingMapper.toDTO(book);
+         
+         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @Operation(
-        summary = "Delete a booking",
-        description = "Cancels and deletes a booking by booking ID"
+        summary = "Cancel a booking",
+        description = "Cancels a booking by booking ID"
     )
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletBook(@PathVariable Integer id) {
-        boolean message = sbook.cancelBooking(id);
-        return new ResponseEntity<String>("Booking is deleted", HttpStatus.OK);
+        boolean isCanceled = sbook.cancelBooking(id);
+        
+        if (isCanceled) {
+            return new ResponseEntity<>("Booking with ID " + id + " has been successfully canceled.", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Could not cancel booking with ID " + id, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

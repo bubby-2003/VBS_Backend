@@ -11,6 +11,7 @@ import com.cts.mapper.MechanicMapper;
 import com.cts.entity.Mechanic;
 import com.cts.entity.Auth;
 import com.cts.entity.ServiceCenter;
+import com.cts.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,9 @@ import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +36,7 @@ public class MechanicControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private MechanicService mechanicService;
 
     @Autowired
@@ -161,11 +162,9 @@ public class MechanicControllerTest {
     @Test
     void testGetMechanicByEmail_NotFound() throws Exception {
         String email = "notfound@test.com";
-
-        Mockito.when(mechanicService.getMechanicByEmail(email)).thenReturn(null);
-
+        Mockito.when(mechanicService.getMechanicByEmail(email))
+               .thenThrow(new ResourceNotFoundException("Mechanic not found"));
         mockMvc.perform(get("/api/mechanic/{email}", email))
-                .andExpect(status().isOk())
-                .andExpect(content().string(""));
+               .andExpect(status().isNotFound());
     }
 }
