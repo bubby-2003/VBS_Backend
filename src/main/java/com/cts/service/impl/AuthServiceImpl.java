@@ -1,108 +1,110 @@
 package com.cts.service.impl;
- 
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.cts.dto.AuthRequestDTO;
+import com.cts.dto.AuthResponseDTO;
 import com.cts.entity.Auth;
 import com.cts.exception.MissingFieldException;
 import com.cts.exception.ResourceNotFoundException;
+import com.cts.mapper.AuthMapper;
 import com.cts.repository.AuthRepository;
 import com.cts.service.AuthService;
 
 import lombok.extern.slf4j.Slf4j;
 
+
 @Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthRepository authRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
-    public List<Auth> getAll() {
-        log.info("Retrieving all Auth users");
-        return authRepository.findAll();
+    public List<AuthResponseDTO> getAll() {
+        return authRepository.findAll()
+                .stream()
+                .map(AuthMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Auth getByEmail(String email) {
-        log.info("Retrieving Auth user by email: {}", email);
-        return authRepository.findById(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with email: " + email));
+    public AuthResponseDTO getByEmail(String email) {
+        Auth auth = authRepository.findById(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        return AuthMapper.toDTO(auth);
     }
 
     @Override
-    public String create(Auth auth) {
-        log.info("Creating new Auth user: {}", auth.getEmail());
-        try {
-            if (auth.getEmail() == null || auth.getEmail().trim().isEmpty()) {
-                throw new MissingFieldException("Email is required");
-            }
-            if (auth.getPassword() == null || auth.getPassword().trim().isEmpty()) {
-                throw new MissingFieldException("Password is required");
-            }
-            if (auth.getRole() == null || auth.getRole().trim().isEmpty()) {
-                throw new MissingFieldException("Role is required");
-            }
-
-            if (authRepository.existsById(auth.getEmail())) {
-                throw new MissingFieldException("Registration failed: Email already exists");
-            }
-
-            // Hash the password before saving
-            auth.setPassword(passwordEncoder.encode(auth.getPassword()));
-
-            authRepository.save(auth);
-            return "Registered successfully";
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to register: " + e.getMessage());
+    public String create(AuthRequestDTO dto) {
+        if (dto.getEmail() == null || dto.getEmail().isBlank()) {
+            throw new MissingFieldException("Email is required");
         }
+        if (dto.getPassword() == null || dto.getPassword().isBlank()) {
+            throw new MissingFieldException("Password is required");
+        }
+        if (dto.getRole() == null || dto.getRole().isBlank()) {
+            throw new MissingFieldException("Role is required");
+        }
+
+        if (authRepository.existsById(dto.getEmail())) {
+            throw new MissingFieldException("Registration failed: Email already exists");
+        }
+
+        Auth auth = AuthMapper.toEntity(dto);
+        auth.setPassword(passwordEncoder.encode(dto.getPassword()));
+        auth.setRole(dto.getRole());
+
+        authRepository.save(auth);
+        return "Registered successfully";
     }
 
     @Override
-    public Auth update(String email, Auth updatedAuth) {
-        log.info("Updating user: {}", email);
-        Auth existing = getByEmail(email);
-        existing.setPassword(updatedAuth.getPassword());
-        existing.setRole(updatedAuth.getRole());
-        Auth saved = authRepository.save(existing);
-        log.info("User {} updated successfully", email);
-        return saved;
+    public AuthResponseDTO update(String email, AuthRequestDTO dto) {
+        Auth existing = authRepository.findById(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        if (dto.getRole() != null && !dto.getRole().isBlank()) {
+            existing.setRole(dto.getRole());
+        }
+
+        Auth updated = authRepository.save(existing);
+        return AuthMapper.toDTO(updated);
     }
 
     @Override
     public void delete(String email) {
-        log.info("Deleting user: {}", email);
-        Auth existing = getByEmail(email);
+        Auth existing = authRepository.findById(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
         authRepository.delete(existing);
-        log.info("User {} deleted", email);
     }
 
     @Override
-    public String login(String email, String rawPassword, String role) {
-        log.info("Login attempt for email: {}", email);
-        try {
-            Auth auth = authRepository.findByEmail(email)
-                    .orElseThrow(() -> new ResourceNotFoundException("Invalid credentials"));
+    public String login(AuthRequestDTO dto) {
+        Auth auth = authRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid credentials"));
 
-            if (!passwordEncoder.matches(rawPassword, auth.getPassword())) {
-                return "Invalid credentials";
-            }
-
-            if (!auth.getRole().equalsIgnoreCase(role)) {
-                return "Invalid role";
-            }
-
-            return "Login successful for role: " + auth.getRole();
-        } catch (Exception e) {
-            return "Login failed: " + e.getMessage();
+        if (!passwordEncoder.matches(dto.getPassword(), auth.getPassword())) {
+            throw new ResourceNotFoundException("Invalid credentials");
         }
+
+        if (!auth.getRole().equalsIgnoreCase(dto.getRole())) {
+            throw new ResourceNotFoundException("Invalid role");
+        }
+
+        return "Login successful for role: " + auth.getRole();
     }
 }
