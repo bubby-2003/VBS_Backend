@@ -3,6 +3,8 @@ package com.cts.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cts.entity.Auth;
@@ -16,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthRepository authRepository;
@@ -38,28 +43,25 @@ public class AuthServiceImpl implements AuthService {
         log.info("Creating new Auth user: {}", auth.getEmail());
         try {
             if (auth.getEmail() == null || auth.getEmail().trim().isEmpty()) {
-                log.warn("Missing email during registration");
                 throw new MissingFieldException("Email is required");
             }
             if (auth.getPassword() == null || auth.getPassword().trim().isEmpty()) {
-                log.warn("Missing password during registration");
                 throw new MissingFieldException("Password is required");
             }
             if (auth.getRole() == null || auth.getRole().trim().isEmpty()) {
-                log.warn("Missing role during registration");
                 throw new MissingFieldException("Role is required");
             }
 
             if (authRepository.existsById(auth.getEmail())) {
-                log.warn("Email already exists: {}", auth.getEmail());
                 throw new MissingFieldException("Registration failed: Email already exists");
             }
 
+            // Hash the password before saving
+            auth.setPassword(passwordEncoder.encode(auth.getPassword()));
+
             authRepository.save(auth);
-            log.info("User {} registered successfully", auth.getEmail());
             return "Registered successfully";
         } catch (Exception e) {
-            log.error("Registration failed for {}: {}", auth.getEmail(), e.getMessage());
             throw new RuntimeException("Unable to register: " + e.getMessage());
         }
     }
@@ -84,18 +86,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(String email, String password, String role) {
+    public String login(String email, String rawPassword, String role) {
         log.info("Login attempt for email: {}", email);
         try {
-            Auth auth = authRepository.findByEmailAndPasswordAndRole(email, password, role)
+            Auth auth = authRepository.findByEmail(email)
                     .orElseThrow(() -> new ResourceNotFoundException("Invalid credentials"));
-            log.info("Login successful for user: {}", email);
+
+            if (!passwordEncoder.matches(rawPassword, auth.getPassword())) {
+                return "Invalid credentials";
+            }
+
+            if (!auth.getRole().equalsIgnoreCase(role)) {
+                return "Invalid role";
+            }
+
             return "Login successful for role: " + auth.getRole();
-        } catch (ResourceNotFoundException e) {
-            log.warn("Login failed for {}: Invalid credentials", email);
-            return "Invalid credentials";
         } catch (Exception e) {
-            log.error("Login error for {}: {}", email, e.getMessage());
             return "Login failed: " + e.getMessage();
         }
     }
