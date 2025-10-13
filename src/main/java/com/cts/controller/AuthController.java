@@ -79,7 +79,7 @@ public class AuthController {
         String result = authService.login(authDto);
         
         // Assuming the service returns a JWT token or success message on success
-        if (result.contains("successful") || result.contains("token:")) {
+        if (result.contains("successful") || result.contains("TOKEN_FOR_")) {
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);

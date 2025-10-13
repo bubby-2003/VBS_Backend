@@ -50,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
             }
 
             Auth auth = AuthMapper.toEntity(authDto);
+            auth.setPassword(passenc.encode(authDto.getPassword()));
             auth.setRole(defaultRole);
 
             authRepository.save(auth);
