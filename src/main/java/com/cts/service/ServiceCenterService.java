@@ -3,12 +3,12 @@ package com.cts.service;
 import java.util.List;
 
 import com.cts.dto.ServiceCenterRequestDTO;
-import com.cts.entity.ServiceCenter;
+import com.cts.dto.ServiceCenterResponseDTO;
 
 public interface ServiceCenterService {
-    public ServiceCenter createServiceCenter(ServiceCenterRequestDTO centerDto);
-    public List<ServiceCenter> getAllServiceCenters();
-    public ServiceCenter getServiceCenterById(Integer id);
+    public ServiceCenterResponseDTO createServiceCenter(ServiceCenterRequestDTO centerDto);
+    public List<ServiceCenterResponseDTO> getAllServiceCenters();
+    public ServiceCenterResponseDTO getServiceCenterById(Integer id);
     public void deleteServiceCenterById(Integer id);
-    public ServiceCenter updateServiceCenterById(ServiceCenterRequestDTO centerDto, Integer id);
+    public ServiceCenterResponseDTO updateServiceCenterById(ServiceCenterRequestDTO centerDto, Integer id);
 }

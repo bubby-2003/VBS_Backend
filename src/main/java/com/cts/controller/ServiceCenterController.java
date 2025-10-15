@@ -14,7 +14,6 @@ import com.cts.dto.ServiceTypeRequestDTO;
 import com.cts.dto.ServiceTypeResponseDTO;
 import com.cts.entity.ServiceCenter;
 import com.cts.entity.ServiceType;
-import com.cts.mapper.ServiceCenterMapper;
 import com.cts.mapper.ServiceTypeMapper;
 
 import com.cts.service.ServiceCenterService;
@@ -22,6 +21,7 @@ import com.cts.service.ServiceTypeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/admin/center")
@@ -37,40 +37,37 @@ public class ServiceCenterController {
 
     @Operation(summary = "Create a new service center", description = "Registers a new service center with details like name, location, and contact info")
     @PostMapping
-    public ResponseEntity<ServiceCenterResponseDTO> createServiceCenter(@RequestBody ServiceCenterRequestDTO centerDto) {
-        ServiceCenter serviceCenter = service.createServiceCenter(centerDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ServiceCenterMapper.toDTO(serviceCenter));
+    public ResponseEntity<ServiceCenterResponseDTO> createServiceCenter(@RequestBody @Valid ServiceCenterRequestDTO centerDto) {
+    	ServiceCenterResponseDTO serviceCenterResponse = service.createServiceCenter(centerDto);
+        return new ResponseEntity<ServiceCenterResponseDTO>(serviceCenterResponse,HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get all service centers", description = "Fetches a list of all registered service centers")
     @GetMapping
     public ResponseEntity<List<ServiceCenterResponseDTO>> getAllCenters() {
-        List<ServiceCenter> centers = service.getAllServiceCenters();
-        List<ServiceCenterResponseDTO> centerDtos = centers.stream()
-            .map(ServiceCenterMapper::toDTO)
-            .collect(Collectors.toList());
-        return ResponseEntity.ok(centerDtos);
+        List<ServiceCenterResponseDTO> centerDtos = service.getAllServiceCenters();
+        return new ResponseEntity<List<ServiceCenterResponseDTO>>(centerDtos,HttpStatus.OK);
     }
 
     @Operation(summary = "Delete service center", description = "Deletes a service center by its ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteServiceCenterById(@PathVariable Integer id) {
         service.deleteServiceCenterById(id);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "Get service center by ID", description = "Fetches details of a service center by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<ServiceCenterResponseDTO> getCenterById(@PathVariable Integer id) {
-        ServiceCenter center = service.getServiceCenterById(id);
-        return ResponseEntity.ok(ServiceCenterMapper.toDTO(center));
+    	ServiceCenterResponseDTO center = service.getServiceCenterById(id);
+        return new ResponseEntity<ServiceCenterResponseDTO>(center,HttpStatus.OK);
     }
 
     @Operation(summary = "Update service center", description = "Updates details of a service center by its ID")
     @PutMapping("/{id}")
     public ResponseEntity<ServiceCenterResponseDTO> updateCenterById(@RequestBody ServiceCenterRequestDTO centerDto, @PathVariable Integer id) {
-        ServiceCenter updated = service.updateServiceCenterById(centerDto, id); 
-        return ResponseEntity.ok(ServiceCenterMapper.toDTO(updated));
+    	ServiceCenterResponseDTO updated = service.updateServiceCenterById(centerDto, id); 
+    	return new ResponseEntity<ServiceCenterResponseDTO>(updated,HttpStatus.OK);
     }
 
 

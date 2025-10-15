@@ -19,16 +19,16 @@ public class ServiceCenter {
 
     private String name;
     private String location;
-    private Long contact;
+    private String contact;
 
     @Enumerated(EnumType.STRING)
-    private Rating rating;
+    private Rating rating=Rating.GOOD;
 
     private String feedback;
 
 
     public enum Rating {
-        Excellent, Good, Average, Poor
+        EXCELLENT, GOOD, AVERAGE, POOR
     }
     
 

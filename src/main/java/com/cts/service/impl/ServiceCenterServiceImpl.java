@@ -1,14 +1,15 @@
 package com.cts.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.cts.dto.ServiceCenterRequestDTO; // Import the Request DTO
+import com.cts.dto.ServiceCenterResponseDTO;
 import com.cts.entity.ServiceCenter;
 import com.cts.exception.ResourceNotFoundException;
-import com.cts.mapper.ServiceCenterMapper; // Import the Mapper
 import com.cts.repository.ServiceCenterRepository;
 import com.cts.service.ServiceCenterService;
 
@@ -18,41 +19,50 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ServiceCenterServiceImpl implements ServiceCenterService {
     private final ServiceCenterRepository centerRepository;
+    private final ModelMapper mapper;
     @Override
-    public ServiceCenter createServiceCenter(ServiceCenterRequestDTO centerDto) {
-        ServiceCenter center = ServiceCenterMapper.toEntity(centerDto);
-        return centerRepository.save(center);
+    public ServiceCenterResponseDTO createServiceCenter(ServiceCenterRequestDTO centerDto) {
+    	
+        ServiceCenter center = mapper.map(centerDto, ServiceCenter.class);
+        
+        center=centerRepository.save(center);
+        ServiceCenterResponseDTO serviceResponse=mapper.map(center, ServiceCenterResponseDTO.class);
+        return serviceResponse;
     }
     @Override
-    public List<ServiceCenter> getAllServiceCenters() {
-        return centerRepository.findAll();
+    public List<ServiceCenterResponseDTO> getAllServiceCenters() {
+        List<ServiceCenter> centers = centerRepository.findAll();
+        return centers.stream()
+                      .map(center -> mapper.map(center, ServiceCenterResponseDTO.class))
+                      .collect(Collectors.toList());
     }
+
     @Override
-    public ServiceCenter getServiceCenterById(Integer id) {
-        return centerRepository.findById(id)
+    public ServiceCenterResponseDTO getServiceCenterById(Integer id) {
+        ServiceCenter center= centerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service Center not found with Id: " + id));
+        ServiceCenterResponseDTO centerResponse=mapper.map(center, ServiceCenterResponseDTO.class);
+        return centerResponse;
     }
     @Override
     public void deleteServiceCenterById(Integer id) {
-        ServiceCenter existingCenter = getServiceCenterById(id); 
-        centerRepository.delete(existingCenter);
+        centerRepository.findById(id)
+        		.orElseThrow(() -> new ResourceNotFoundException("Service Center not found with Id: " + id));
+        centerRepository.deleteById(id);
     }
     @Override
-    public ServiceCenter updateServiceCenterById(ServiceCenterRequestDTO centerDto, Integer id) {
-        ServiceCenter existingCenter = centerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Service Center not found with Id: " + id));
+    public ServiceCenterResponseDTO updateServiceCenterById(ServiceCenterRequestDTO centerDto, Integer id) {
+        ServiceCenter center = centerRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Service Center not found with Id: " + id));
 
-        
-        if (centerDto.getContact() != null) {
-            existingCenter.setContact(centerDto.getContact());
-        }
-        if (centerDto.getLocation() != null) {
-            existingCenter.setLocation(centerDto.getLocation());
-        }
-        if (centerDto.getName() != null) {
-            existingCenter.setName(centerDto.getName());
-        }
-        
-        return centerRepository.save(existingCenter);
+        // Update fields individually or use a safe mapper
+        center.setName(centerDto.getName());
+        center.setLocation(centerDto.getLocation());
+        center.setContact(centerDto.getContact());
+
+
+        center = centerRepository.save(center);
+        return mapper.map(center, ServiceCenterResponseDTO.class);
     }
+
 }
