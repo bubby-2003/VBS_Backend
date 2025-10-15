@@ -1,7 +1,7 @@
 package com.cts.controller;
 
-import com.cts.dto.AuthRequestDTO;    // Import Request DTO
-import com.cts.dto.AuthResponseDTO;      // Import Mapper
+import com.cts.dto.AuthRequestDTO;
+import com.cts.dto.AuthResponseDTO; 
 import com.cts.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,10 +9,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;       // Important for DTO validation
+import jakarta.validation.Valid; 
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
