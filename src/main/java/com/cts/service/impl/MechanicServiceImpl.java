@@ -28,7 +28,7 @@ public class MechanicServiceImpl implements MechanicService {
 
     @Override
     public Mechanic createMechanic(MechanicRequestDTO mechanicDto) {
-        Auth auth = authrepo.findById(mechanicDto.getEmail())
+        Auth auth = authrepo.findByEmail(mechanicDto.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("Email not found"));
 
         Mechanic mechanic = new Mechanic();
@@ -51,9 +51,9 @@ public class MechanicServiceImpl implements MechanicService {
     }
 
     @Override
-    public Mechanic updateMechanic(String email, MechanicRequestDTO mechanicDto) {
-        Mechanic existing = mechrepo.findByAuthEmail(email);
-        if (existing == null) throw new ResourceNotFoundException("Mechanic not found");
+    public Mechanic updateMechanic(int id, MechanicRequestDTO mechanicDto) {
+        Mechanic existing = mechrepo.findByAuthId(id)
+        		.orElseThrow(()->new ResourceNotFoundException("Mechanic not found"));
 
         existing.setName(mechanicDto.getName());
         existing.setExpertise(mechanicDto.getExpertise());
@@ -62,7 +62,7 @@ public class MechanicServiceImpl implements MechanicService {
         existing.setRating(mechanicDto.getRating());
         existing.setIsVerified(mechanicDto.getIsVerified());
         existing.setStatus(mechanicDto.getStatus());
-        existing.setAddress(mechanicDto.getAddress());
+        existing.setAddress(mechanicDto.getAddress()); 
         existing.setPhone(mechanicDto.getPhone());
 
         if (mechanicDto.getCenterId() != null) {
@@ -73,11 +73,9 @@ public class MechanicServiceImpl implements MechanicService {
     }
 
     @Override
-    public Mechanic getMechanicByEmail(String email) {
-        Mechanic mechanic = mechrepo.findByAuthEmail(email);
-        if (mechanic == null) {
-            throw new ResourceNotFoundException("Mechanic not found");
-        }
+    public Mechanic getMechanicById(int id) {
+    	Mechanic mechanic = mechrepo.findByAuthId(id)
+        		.orElseThrow(()->new ResourceNotFoundException("Mechanic not found"));
         return mechanic;
     }
 

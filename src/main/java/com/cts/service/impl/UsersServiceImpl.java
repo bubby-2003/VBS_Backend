@@ -23,8 +23,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Customer createProfile(UsersRequestDTO userDto) {
+    	
         
-        Auth existingAuth = authRepository.findById(userDto.getEmail())
+        Auth existingAuth = authRepository.findByEmail(userDto.getEmail())
             .orElseThrow(() -> new ResourceNotFoundException("Email not found in auth table: " + userDto.getEmail()));
 
       
@@ -33,19 +34,18 @@ public class UsersServiceImpl implements UsersService {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setAddress(userDto.getAddress());
-        user.setPhone(userDto.getPhone());
+        user.setPhone(userDto.getPhone()); 
         user.setStatus(userDto.getStatus());
 
         return usersRepository.save(user);
     }
 
     @Override
-    public Customer updateProfile(String email, UsersRequestDTO updatedUserDto) {
+    public Customer updateProfile(int id, UsersRequestDTO updatedUserDto) {
        
-        Customer existingUser = usersRepository.findByAuthEmail(email);
-        if (existingUser == null) {
-            throw new ResourceNotFoundException("User not found with email: " + email);
-        }
+        Customer existingUser = usersRepository.findByAuthId(id)
+        		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + id));
+
 
         existingUser.setFirstName(updatedUserDto.getFirstName());
         existingUser.setLastName(updatedUserDto.getLastName());
@@ -57,11 +57,9 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Customer viewProfile(String email) {
-        Customer user = usersRepository.findByAuthEmail(email);
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found with email: " + email);
-        }
+    public Customer viewProfile(int id) {
+    	Customer user = usersRepository.findByAuthId(id)
+        		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + id));
         return user;
     }
 }

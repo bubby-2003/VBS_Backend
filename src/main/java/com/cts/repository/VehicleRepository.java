@@ -11,4 +11,5 @@ public interface VehicleRepository extends JpaRepository<Vehicles, Integer> {
 
 	List<Vehicles> findByCustomer(Customer customer);
 	List<Vehicles> findByCustomerUserAuthEmail(String email);
+	List<Vehicles> findByUserAuthId(int custmerId);
 }

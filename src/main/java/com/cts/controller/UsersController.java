@@ -46,43 +46,43 @@ public class UsersController {
     }
 
     @Operation(summary = "Update user profile", description = "Updates an existing user profile using their email as the identifier")
-    @PutMapping("/{email}")
-    public UsersResponseDTO updateProfile(@PathVariable String email, @RequestBody UsersRequestDTO userDto) {
-        Customer updatedUser = usersService.updateProfile(email, userDto);
+    @PutMapping("/{id}")
+    public UsersResponseDTO updateProfile(@PathVariable int id, @RequestBody UsersRequestDTO userDto) {
+        Customer updatedUser = usersService.updateProfile(id, userDto);
         return UsersMapper.toDTO(updatedUser);
     }
 
     @Operation(summary = "View user profile", description = "Fetches details of a user profile by email")
-    @GetMapping("/{email}")
-    public UsersResponseDTO viewProfile(@PathVariable String email) {
-        Customer user = usersService.viewProfile(email);
+    @GetMapping("/{id}")
+    public UsersResponseDTO viewProfile(@PathVariable int id) {
+        Customer user = usersService.viewProfile(id);
         return UsersMapper.toDTO(user);
     }
     @Operation(summary = "Register vehicle", description = "Registers a new vehicle under a user’s profile")
-    @PostMapping("/{email}/vehicle")
-    public VehicleResponseDTO registerVehicle(@RequestBody VehicleRequestDTO vehicleDto, @PathVariable String email) {
-        Vehicles savedVehicle = vehicleService.registerVehicle(vehicleDto, email);
+    @PostMapping("/{id}/vehicle")
+    public VehicleResponseDTO registerVehicle(@RequestBody VehicleRequestDTO vehicleDto, @PathVariable int id) {
+        Vehicles savedVehicle = vehicleService.registerVehicle(vehicleDto, id);
         return VehicleMapper.toDTO(savedVehicle);
     }
     @Operation(summary = "Update vehicle", description = "Updates details of a specific vehicle belonging to a user")
-    @PutMapping("/{email}/vehicle/{id}")
-    public VehicleResponseDTO updateVehicle(@PathVariable String email, @PathVariable Integer id, @RequestBody VehicleRequestDTO vehicleDto) {
-        Vehicles updatedVehicle = vehicleService.updateVehicle(email, id, vehicleDto);
+    @PutMapping("/{customerId}/vehicle/{id}")
+    public VehicleResponseDTO updateVehicle(@PathVariable int customerId, @PathVariable Integer id, @RequestBody VehicleRequestDTO vehicleDto) {
+        Vehicles updatedVehicle = vehicleService.updateVehicle(customerId, id, vehicleDto);
         return VehicleMapper.toDTO(updatedVehicle);
-    }
+    } 
 
     @Operation(summary = "View vehicle by ID", description = "Fetches details of a specific vehicle belonging to a user by vehicle ID")
-    @GetMapping("/{email}/vehicle/{id}")
-    public VehicleResponseDTO viewVehicle(@PathVariable String email, @PathVariable Integer id) {
-        Vehicles vehicle = vehicleService.viewVehicle(email, id);
+    @GetMapping("/{customerId}/vehicle/{id}")
+    public VehicleResponseDTO viewVehicle(@PathVariable int customerId, @PathVariable Integer id) {
+        Vehicles vehicle = vehicleService.viewVehicle(customerId, id);
         return VehicleMapper.toDTO(vehicle);
 
     }
 
-    @GetMapping("/{email}/vehicle")
+    @GetMapping("/{id}/vehicle")
     @Operation(summary = "View all vehicles by user specific ", description = "Fetches details of  allvehicle belonging to a particular user by  user email")
-    public List<VehicleResponseDTO> getAllVehicles(@PathVariable String email) {
-        List<Vehicles> vehicles = vehicleService.getAllVehiclesByEmail(email);
+    public List<VehicleResponseDTO> getAllVehicles(@PathVariable int id) {
+        List<Vehicles> vehicles = vehicleService.getAllVehiclesById(id);
         return vehicles.stream()
                        .map(VehicleMapper::toDTO)
                        .toList();

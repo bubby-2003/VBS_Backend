@@ -25,14 +25,12 @@ public class VehicleServiceImpl implements VehicleService {
     private final CustomerRepository userRepository;
 
     @Override
-    public Vehicles registerVehicle(VehicleRequestDTO vehicleDto, String email) {
-        Customer user = userRepository.findByAuthEmail(email);
-        if (user == null) {
-            throw new ResourceNotFoundException("User does not exist: " + email);
-        }
+    public Vehicles registerVehicle(VehicleRequestDTO vehicleDto, int id) {
+    	Customer user=userRepository.findByAuthId(id)
+        		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + id));
 
         Vehicles vehicle = new Vehicles();
-        vehicle.setUser(user);
+        vehicle.setCustomer(user);
         vehicle.setMake(vehicleDto.getMake());
         vehicle.setModel(vehicleDto.getModel());
         vehicle.setYear(vehicleDto.getYear());
@@ -49,16 +47,14 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Vehicles updateVehicle(String email, Integer id, VehicleRequestDTO vehicleDto) {
+    public Vehicles updateVehicle(int customerId, Integer id, VehicleRequestDTO vehicleDto) {
         Vehicles existingVehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
 
-        Customer user = userRepository.findByAuthEmail(email);
-        if (user == null) {
-            throw new ResourceNotFoundException("User does not exist: " + email);
-        }
-
-        existingVehicle.setUser(user);
+        Customer user = userRepository.findByAuthId(customerId)
+        		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + customerId));
+ 
+        existingVehicle.setCustomer(user);
         existingVehicle.setMake(vehicleDto.getMake());
         existingVehicle.setModel(vehicleDto.getModel());
         existingVehicle.setYear(vehicleDto.getYear());
@@ -75,23 +71,21 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Vehicles viewVehicle(String email, Integer id) {
-        Customer user = userRepository.findByAuthEmail(email);
-        if (user == null) {
-            throw new ResourceNotFoundException("User does not exist: " + email);
-        }
+    public Vehicles viewVehicle(int customerId, Integer id) {
+    	userRepository.findByAuthId(customerId)
+        		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + customerId));
 
         return vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
     }
 
 	@Override
-	public List<Vehicles> getAllVehiclesByEmail(String email) {
+	public List<Vehicles> getAllVehiclesById(int custmerId) {
 //		Users user=userRepository.findByAuthEmail(email);
 
-        List<Vehicles> vehicles = vehicleRepository.findByUserAuthEmail(email);
+        List<Vehicles> vehicles = vehicleRepository.findByUserAuthId(custmerId);
         if (vehicles == null || vehicles.isEmpty()) {
-            throw new ResourceNotFoundException("No vehicles found for user: " + email);
+            throw new ResourceNotFoundException("No vehicles found for user: " + custmerId);
         }
 
         return vehicles;

@@ -5,14 +5,18 @@ import com.cts.dto.AuthResponseDTO;
 import com.cts.dto.LoginDTO;
 import com.cts.dto.LoginResponseDTO;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 public interface AuthService {
     List<AuthResponseDTO> getAll();
     AuthResponseDTO getById(int id);
-    AuthResponseDTO getByEmail(String email);
+//    AuthResponseDTO getByEmail(String email);
     String create(AuthRequestDTO authDto);
-    AuthResponseDTO update(String email, AuthRequestDTO authDto);
-    void delete(String email);
+//    AuthResponseDTO update(String email, AuthRequestDTO authDto);
+    void delete(int email);
+//    void delete(String email);
     LoginResponseDTO login(LoginDTO loginDto);
+	AuthResponseDTO update(int id, @Valid AuthRequestDTO authDto);
 }

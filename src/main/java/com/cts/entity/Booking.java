@@ -30,15 +30,15 @@ public class Booking {
     private Integer bookingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_email",referencedColumnName = "email")
-    private Customer user;
+    @JoinColumn(name="customer_id",referencedColumnName = "id")
+    private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
     private Vehicles vehicle;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="mechanic_email",referencedColumnName = "email",nullable = true)
+    @JoinColumn(name="mechanic_id",referencedColumnName = "id",nullable = true)
     private Mechanic mechanic;
     
     @ManyToOne(fetch = FetchType.LAZY)

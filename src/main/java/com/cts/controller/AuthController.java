@@ -34,7 +34,7 @@ public class AuthController {
     // --- GET USER BY EMAIL ---
     @Operation(summary = "Get user by email", description = "Fetches a single Auth user by their email address")
     @GetMapping("/{id}")
-    public ResponseEntity<AuthResponseDTO> getByEmail(@PathVariable int  id) {
+    public ResponseEntity<AuthResponseDTO> getByUserId(@PathVariable int  id) {
         AuthResponseDTO authDto = authService.getById(id);
         return ResponseEntity.ok(authDto);
     }
@@ -50,18 +50,18 @@ public class AuthController {
 
     // --- UPDATE USER ---
     @Operation(summary = "Update user", description = "Updates an existing Auth user by email")
-    @PutMapping("/{email}")
-    public ResponseEntity<AuthResponseDTO> update(@PathVariable String email,
+    @PutMapping("/{id}")
+    public ResponseEntity<AuthResponseDTO> update(@PathVariable int id,
                                                   @RequestBody @Valid AuthRequestDTO authDto) {
-        AuthResponseDTO updatedDto = authService.update(email, authDto);
+        AuthResponseDTO updatedDto = authService.update(id, authDto);
         return ResponseEntity.ok(updatedDto);
     }
 
     // --- DELETE USER ---
     @Operation(summary = "Delete user", description = "Deletes an Auth user by email")
-    @DeleteMapping("/{email}")
-    public ResponseEntity<String> delete(@PathVariable String email) {
-        authService.delete(email);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable int id) {
+        authService.delete(id);
         return ResponseEntity.ok("Deleted successfully");
     }
 

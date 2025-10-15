@@ -24,6 +24,8 @@ import com.cts.repository.AuthRepository;
 import com.cts.service.AuthService;
 import com.cts.service.UserInfoConfigManager;
 
+import jakarta.validation.Valid;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -52,18 +54,18 @@ public class AuthServiceImpl implements AuthService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public AuthResponseDTO getByEmail(String email) {
-        Auth auth = authRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with email: " + email));
-        return modelMapper.map(auth, AuthResponseDTO.class);
-    }
+//    @Override
+//    public AuthResponseDTO getByEmail(String email) {
+//        Auth auth = authRepository.findByEmail(email)
+//                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with email: " + email));
+//        return modelMapper.map(auth, AuthResponseDTO.class);
+//    }
 
     @Override
     public AuthResponseDTO getById(int id) {
         Auth auth = authRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Auth not found with Id: " + id));
-        return modelMapper.map(getByEmail(auth.getEmail()), AuthResponseDTO.class);
+        return modelMapper.map(auth, AuthResponseDTO.class);
     }
     
     @Override
@@ -74,9 +76,8 @@ public class AuthServiceImpl implements AuthService {
             throw new MissingFieldException("Registration failed: Admin role is not allowed to self-register");
         }
 
-        if (authRepository.existsById(authDto.getEmail())) {
-            throw new MissingFieldException("Registration failed: Email already exists");
-        }
+        authRepository.findByEmail(authDto.getEmail()).orElseThrow(()->new ResourceNotFoundException("Registration failed: Email already exists"));
+       
 
         Auth auth = modelMapper.map(authDto, Auth.class);
         auth.setPassword(passenc.encode(authDto.getPassword()));
@@ -86,23 +87,35 @@ public class AuthServiceImpl implements AuthService {
         return "Registered successfully";
     }
 
+//    @Override
+//    public AuthResponseDTO update(String email, AuthRequestDTO authDto) {
+//        Auth existing = authRepository.findById(email)
+//                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with email: " + email));
+//
+//        if (authDto.getPassword() != null && !authDto.getPassword().trim().isEmpty()) {
+//            existing.setPassword(passenc.encode(authDto.getPassword()));
+//        }
+//
+//        Auth updated = authRepository.save(existing);
+//        return modelMapper.map(updated, AuthResponseDTO.class);
+//    }
     @Override
-    public AuthResponseDTO update(String email, AuthRequestDTO authDto) {
-        Auth existing = authRepository.findById(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with email: " + email));
-
-        if (authDto.getPassword() != null && !authDto.getPassword().trim().isEmpty()) {
-            existing.setPassword(passenc.encode(authDto.getPassword()));
-        }
-
-        Auth updated = authRepository.save(existing);
-        return modelMapper.map(updated, AuthResponseDTO.class);
+    public AuthResponseDTO update(int id, AuthRequestDTO authDto) {
+    	Auth existing = authRepository.findById(id)
+    			.orElseThrow(() -> new ResourceNotFoundException("Auth not found with Id: " + id));
+    	
+    	if (authDto.getPassword() != null && !authDto.getPassword().trim().isEmpty()) {
+    		existing.setPassword(passenc.encode(authDto.getPassword()));
+    	}
+    	
+    	Auth updated = authRepository.save(existing);
+    	return modelMapper.map(updated, AuthResponseDTO.class);
     }
 
     @Override
-    public void delete(String email) {
-        Auth existing = authRepository.findById(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with email: " + email));
+    public void delete(int id) {
+        Auth existing = authRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with Id: " + id));
         authRepository.delete(existing);
     }
 
@@ -124,6 +137,8 @@ public class AuthServiceImpl implements AuthService {
         loginResponse.setAccessToken(jwt);
         return loginResponse;
     }
+
+	
 
 	
 }

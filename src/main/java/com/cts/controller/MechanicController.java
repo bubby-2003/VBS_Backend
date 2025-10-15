@@ -36,9 +36,9 @@ public class MechanicController {
           summary = "Update mechanic details",
           description = "Updates an existing mechanic’s information using their email as the identifier"
       )
-    @PutMapping("/{email}")
-    public ResponseEntity<MechanicResponseDTO> updateMechanic(@PathVariable String email, @RequestBody MechanicRequestDTO mechanicDto) {
-        Mechanic mechanic = mechanicService.updateMechanic(email, mechanicDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<MechanicResponseDTO> updateMechanic(@PathVariable int id, @RequestBody MechanicRequestDTO mechanicDto) {
+        Mechanic mechanic = mechanicService.updateMechanic(id, mechanicDto);
         return new ResponseEntity<>(MechanicMapper.toDTO(mechanic), HttpStatus.OK);
     }
 
@@ -46,9 +46,9 @@ public class MechanicController {
         summary = "Get mechanic by email",
         description = "Fetches mechanic details using their email address"
     )
-    @GetMapping("/{email}")
-    public ResponseEntity<MechanicResponseDTO> getMechanic(@PathVariable @Valid String email) {
-        Mechanic mechanic = mechanicService.getMechanicByEmail(email);
+    @GetMapping("/{id}")
+    public ResponseEntity<MechanicResponseDTO> getMechanic(@PathVariable @Valid int id) {
+        Mechanic mechanic = mechanicService.getMechanicByEmail(id);
         return new ResponseEntity<>(MechanicMapper.toDTO(mechanic), HttpStatus.OK);
     }
 
