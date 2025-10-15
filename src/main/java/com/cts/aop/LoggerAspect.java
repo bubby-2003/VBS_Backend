@@ -27,25 +27,29 @@ public class LoggerAspect {
 	
 	@Before(ALL_LAYERS)
 	public void logMethodEntry(JoinPoint jp) {
-        log.info("➡️ ENTRY: {}.{}() with arguments: {}", 
-            jp.getSignature(),
-            jp.getArgs());
+		log.info("Before...");
+	    log.info("➡️ ENTRY: {}() with arguments: {}", 
+	        jp.getSignature().getName(),
+	        jp.getArgs());
 	}
-    @AfterReturning(pointcut = ALL_LAYERS, returning = "result")
-    public void logMethodExit(JoinPoint jp, Object result) {
-        String resultSnippet = (result != null && result.toString().length() > 200) 
-                              ? result.toString().substring(0, 200) + "..." 
-                              : String.valueOf(result);
 
-        log.info("⬅️ Exiting method: {} with result: {}",
-            jp.getSignature().getName(),
-            resultSnippet);
-    }
-    
-    @AfterThrowing(pointcut = ALL_LAYERS, throwing = "e")
-    public void logMethodException(JoinPoint jp, Throwable exception) {
-        log.error("💥 Exception in method: {} with cause: {}", jp.getSignature().getName(), 
-        		exception.getMessage());
-    }
+	@AfterReturning(pointcut = ALL_LAYERS, returning = "result")
+	public void logMethodExit(JoinPoint jp, Object result) {
+	    String resultSnippet = (result != null && result.toString().length() > 200) 
+	                          ? result.toString().substring(0, 200) + "..." 
+	                          : String.valueOf(result);
+	    log.info("Successfully Returning...");
+	    log.info("⬅️ Existing method: {} with result: {}",
+	        jp.getSignature().getName(),
+	        resultSnippet);
+	}
+
+	@AfterThrowing(pointcut = ALL_LAYERS, throwing = "e")
+	public void logMethodException(JoinPoint jp, Throwable exception) {
+		log.info("OOPS!!! Throws Exception");
+	    log.error("💥 Exception in method: {} with cause: {}", 
+	        jp.getSignature().getName(),
+	        exception.getMessage());
+	}
 	
 }

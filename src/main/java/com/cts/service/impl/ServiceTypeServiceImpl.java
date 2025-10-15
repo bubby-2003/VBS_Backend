@@ -1,15 +1,17 @@
 package com.cts.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cts.dto.ServiceTypeRequestDTO;
+import com.cts.dto.ServiceTypeResponseDTO;
 import com.cts.entity.ServiceCenter;
 import com.cts.entity.ServiceType;
 import com.cts.exception.ResourceNotFoundException;
-import com.cts.mapper.ServiceTypeMapper;
 import com.cts.repository.ServiceCenterRepository;
 import com.cts.repository.ServiceTypeRepository;
 import com.cts.service.ServiceTypeService;
@@ -23,40 +25,45 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
 	private ServiceCenterRepository centerRepository;
 	@Autowired
 	private ServiceTypeRepository typeRepository;
+	@Autowired
+	private ModelMapper mapper;
 
 	@Override
-	public ServiceType addServiceType(ServiceTypeRequestDTO serviceTypeDto, Integer serviceCenterId) {
+	public ServiceTypeResponseDTO addServiceType(ServiceTypeRequestDTO serviceTypeDto, Integer serviceCenterId) {
 	    ServiceCenter center = centerRepository.findById(serviceCenterId)
 	            .orElseThrow(() -> new ResourceNotFoundException(
 	                    "Service Center not found with Id: " + serviceCenterId));
-
-	    ServiceType serviceType = ServiceTypeMapper.toEntity(serviceTypeDto);
+	    
+	    ServiceType serviceType = mapper.map(serviceTypeDto, ServiceType.class);
 	  
 	    serviceType.setServiceCenter(center);
+	    serviceType.setStatus(ServiceType.Status.active); 
+	    
 
-	    if (serviceType.getStatus() == null) {
-	        serviceType.setStatus(ServiceType.Status.active); 
-	    }
-
-	    return typeRepository.save(serviceType);
+	    serviceType=typeRepository.save(serviceType);
+	    return mapper.map(serviceType, ServiceTypeResponseDTO.class);
+	    
+	    
 	}
 
 
 	@Override
-	public List<ServiceType> getAllServiceTypes(Integer serviceCenterId) {
-		centerRepository.findById(serviceCenterId)
-				.orElseThrow(()->new ResourceNotFoundException("Service Center not found By Id: "+serviceCenterId));
+	public List<ServiceTypeResponseDTO> getAllServiceTypes(Integer serviceCenterId) {
+	    centerRepository.findById(serviceCenterId)
+	        .orElseThrow(() -> new ResourceNotFoundException("Service Center not found By Id: " + serviceCenterId));
 
-		List<ServiceType> serviceTypes = typeRepository.findAllByServiceCenterId(serviceCenterId); 
-		return serviceTypes;
+	    List<ServiceType> serviceTypes = typeRepository.findAllByServiceCenterId(serviceCenterId); 
+	    return serviceTypes.stream()
+	        .map(type -> mapper.map(type, ServiceTypeResponseDTO.class))
+	        .collect(Collectors.toList());
 	}
 
 	@Override
-	public ServiceType getServiceTypeById(Integer serviceTypeId,Integer serviceCenterId) {
+	public ServiceTypeResponseDTO getServiceTypeById(Integer serviceTypeId,Integer serviceCenterId) {
 		
 		ServiceType serviceType = typeRepository.findByServiceTypeIdAndServiceCenterId(serviceTypeId, serviceCenterId)
 				.orElseThrow(()->new ResourceNotFoundException("Service Type not found By Id: "+serviceTypeId+" With Service Center Id: "+serviceCenterId));
-		return serviceType;
+		return mapper.map(serviceType, ServiceTypeResponseDTO.class);
 	}
 
 	@Override
@@ -69,21 +76,29 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
 		
 	}
 	@Override
-	public ServiceType updateServiceType( Integer serviceTypeId,Integer serviceCenterId, ServiceTypeRequestDTO updatedTypeDto) {
+	public ServiceTypeResponseDTO updateServiceType(Integer serviceTypeId, Integer serviceCenterId, ServiceTypeRequestDTO updatedTypeDto) {
+	    ServiceType serviceType = typeRepository.findByServiceTypeIdAndServiceCenterId(serviceTypeId, serviceCenterId)
+	        .orElseThrow(() -> new ResourceNotFoundException(
+	            "Service Type not found By Id: " + serviceTypeId + " With Service Center Id: " + serviceCenterId));
 
-		ServiceType serviceType = typeRepository.findByServiceTypeIdAndServiceCenterId(serviceTypeId, serviceCenterId)
-				.orElseThrow(()->new ResourceNotFoundException("Service Type not found By Id: "+serviceTypeId+" With Service Center Id: "+serviceCenterId));
-		
-		if (updatedTypeDto.getName() != null) {
-	        serviceType.setName(updatedTypeDto.getName());
-	    }
-	    if (updatedTypeDto.getDescription() != null) {
-	        serviceType.setDescription(updatedTypeDto.getDescription());
-	    }
-	    if (updatedTypeDto.getPrice() != null) {
-	        serviceType.setPrice(updatedTypeDto.getPrice());
-	    }
-	    return typeRepository.save(serviceType);
+	    serviceType.setName(updatedTypeDto.getName());
+	    serviceType.setDescription(updatedTypeDto.getDescription());
+	    serviceType.setPrice(updatedTypeDto.getPrice());
+
+	    serviceType = typeRepository.save(serviceType);
+	    return mapper.map(serviceType, ServiceTypeResponseDTO.class);
 	}
 
+
 }
+
+
+
+
+
+
+
+
+
+
+
