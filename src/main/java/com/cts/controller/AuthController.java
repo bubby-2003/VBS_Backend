@@ -33,9 +33,9 @@ public class AuthController {
 
     // --- GET USER BY EMAIL ---
     @Operation(summary = "Get user by email", description = "Fetches a single Auth user by their email address")
-    @GetMapping("/{email}")
-    public ResponseEntity<AuthResponseDTO> getByEmail(@PathVariable String email) {
-        AuthResponseDTO authDto = authService.getByEmail(email);
+    @GetMapping("/{id}")
+    public ResponseEntity<AuthResponseDTO> getByEmail(@PathVariable int  id) {
+        AuthResponseDTO authDto = authService.getById(id);
         return ResponseEntity.ok(authDto);
     }
 

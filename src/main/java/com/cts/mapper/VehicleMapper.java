@@ -8,7 +8,7 @@ public class VehicleMapper {
     public static VehicleResponseDTO toDTO(Vehicles vehicle) {
         VehicleResponseDTO dto = new VehicleResponseDTO();
         dto.setVehicleId(vehicle.getVehicleId());
-        dto.setEmail(vehicle.getUser().getAuth().getEmail());
+        dto.setEmail(vehicle.getCustomer().getAuth().getEmail());
         dto.setMake(vehicle.getMake());
         dto.setModel(vehicle.getModel());
         dto.setYear(vehicle.getYear());

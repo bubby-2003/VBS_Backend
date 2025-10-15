@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 
 import com.cts.dto.UsersRequestDTO;
 import com.cts.entity.Auth;
-import com.cts.entity.Users;
+import com.cts.entity.Customer;
 import com.cts.exception.ResourceNotFoundException;
 import com.cts.repository.AuthRepository;
-import com.cts.repository.UsersRepository;
+import com.cts.repository.CustomerRepository;
 import com.cts.service.UsersService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,18 +17,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
 	@Autowired
-    private final UsersRepository usersRepository;
+    private final CustomerRepository usersRepository;
 	@Autowired
     private final AuthRepository authRepository;
 
     @Override
-    public Users createProfile(UsersRequestDTO userDto) {
+    public Customer createProfile(UsersRequestDTO userDto) {
         
         Auth existingAuth = authRepository.findById(userDto.getEmail())
             .orElseThrow(() -> new ResourceNotFoundException("Email not found in auth table: " + userDto.getEmail()));
 
       
-        Users user = new Users();
+        Customer user = new Customer();
         user.setAuth(existingAuth);
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
@@ -40,9 +40,9 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Users updateProfile(String email, UsersRequestDTO updatedUserDto) {
+    public Customer updateProfile(String email, UsersRequestDTO updatedUserDto) {
        
-        Users existingUser = usersRepository.findByAuthEmail(email);
+        Customer existingUser = usersRepository.findByAuthEmail(email);
         if (existingUser == null) {
             throw new ResourceNotFoundException("User not found with email: " + email);
         }
@@ -57,8 +57,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Users viewProfile(String email) {
-        Users user = usersRepository.findByAuthEmail(email);
+    public Customer viewProfile(String email) {
+        Customer user = usersRepository.findByAuthEmail(email);
         if (user == null) {
             throw new ResourceNotFoundException("User not found with email: " + email);
         }

@@ -1,6 +1,6 @@
 package com.cts.dto;
 
-import com.cts.entity.Users.Status;
+import com.cts.entity.Customer.Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

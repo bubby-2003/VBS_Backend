@@ -11,14 +11,14 @@ import lombok.AllArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Users {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;   
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="email",referencedColumnName = "email",unique = true)
+    @JoinColumn(name="auth_id",referencedColumnName = "id",unique = true)
     private Auth auth;  
     
     private String firstName;
@@ -33,7 +33,7 @@ public class Users {
         active, inActive
     }
 
-	public Users(String firstName, String lastName, String address, String phone , String email) {
+	public Customer(String firstName, String lastName, String address, String phone , String email) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;

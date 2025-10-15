@@ -31,7 +31,7 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_email",referencedColumnName = "email")
-    private Users user;
+    private Customer user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")

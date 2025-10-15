@@ -17,7 +17,7 @@ public class Mechanic {
     private Integer id; 
 
     @OneToOne
-    @JoinColumn(name="email", referencedColumnName = "email",unique = true)
+    @JoinColumn(name="auth_id", referencedColumnName = "id",unique = true)
     private Auth auth; 
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,6 +50,7 @@ public class Mechanic {
     public enum Rating { Excellent, Good, Average, Poor }
     public enum VerificationStatus { yes, no, rejected }
     public enum Status { active, inActive }
+    
 	public Mechanic(String name, String expertise, String skills, String address, String phone , String email) {
 		super();
 		this.name = name;

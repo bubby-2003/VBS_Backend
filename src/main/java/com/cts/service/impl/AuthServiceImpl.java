@@ -54,11 +54,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDTO getByEmail(String email) {
-        Auth auth = authRepository.findById(email)
+        Auth auth = authRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Auth not found with email: " + email));
         return modelMapper.map(auth, AuthResponseDTO.class);
     }
 
+    @Override
+    public AuthResponseDTO getById(int id) {
+        Auth auth = authRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with Id: " + id));
+        return modelMapper.map(getByEmail(auth.getEmail()), AuthResponseDTO.class);
+    }
+    
     @Override
     public String create(AuthRequestDTO authDto) {
         AuthRole role = authDto.getRole();

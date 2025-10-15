@@ -1,8 +1,8 @@
 package com.cts.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.cts.entity.Users;
+import com.cts.entity.Customer;
  
-public interface UsersRepository extends JpaRepository<Users, Integer> {
-	Users findByAuthEmail(String email);
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+	Customer findByAuthEmail(String email);
 }

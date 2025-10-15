@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cts.dto.VehicleRequestDTO;
-import com.cts.entity.Users;
+import com.cts.entity.Customer;
 import com.cts.entity.Vehicles;
 import com.cts.exception.ResourceNotFoundException;
-import com.cts.repository.UsersRepository;
+import com.cts.repository.CustomerRepository;
 import com.cts.repository.VehicleRepository;
 import com.cts.service.VehicleService;
 
@@ -22,11 +22,11 @@ public class VehicleServiceImpl implements VehicleService {
 	@Autowired
     private final VehicleRepository vehicleRepository;
 	@Autowired
-    private final UsersRepository userRepository;
+    private final CustomerRepository userRepository;
 
     @Override
     public Vehicles registerVehicle(VehicleRequestDTO vehicleDto, String email) {
-        Users user = userRepository.findByAuthEmail(email);
+        Customer user = userRepository.findByAuthEmail(email);
         if (user == null) {
             throw new ResourceNotFoundException("User does not exist: " + email);
         }
@@ -53,7 +53,7 @@ public class VehicleServiceImpl implements VehicleService {
         Vehicles existingVehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
 
-        Users user = userRepository.findByAuthEmail(email);
+        Customer user = userRepository.findByAuthEmail(email);
         if (user == null) {
             throw new ResourceNotFoundException("User does not exist: " + email);
         }
@@ -76,7 +76,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicles viewVehicle(String email, Integer id) {
-        Users user = userRepository.findByAuthEmail(email);
+        Customer user = userRepository.findByAuthEmail(email);
         if (user == null) {
             throw new ResourceNotFoundException("User does not exist: " + email);
         }

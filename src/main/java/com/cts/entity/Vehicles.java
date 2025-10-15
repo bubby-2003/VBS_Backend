@@ -19,8 +19,8 @@ public class Vehicles {
 
    
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="email",referencedColumnName = "email")
-    private Users user;
+    @JoinColumn(name="customer_id",referencedColumnName = "id")
+    private Customer customer;
 
     private String make;
     private String model;

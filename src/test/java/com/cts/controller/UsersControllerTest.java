@@ -23,8 +23,8 @@ import com.cts.dto.UsersRequestDTO;
 import com.cts.dto.UsersResponseDTO;
 import com.cts.dto.VehicleRequestDTO;
 import com.cts.dto.VehicleResponseDTO;
-import com.cts.entity.Users.Status;
-import com.cts.entity.Users;
+import com.cts.entity.Customer.Status;
+import com.cts.entity.Customer;
 import com.cts.entity.Vehicles;
 import com.cts.entity.Vehicles.VehicleType;
 import com.cts.mapper.UsersMapper;
@@ -110,7 +110,7 @@ public class UsersControllerTest {
     void testCreateUserProfile_Success() throws Exception {
         UsersRequestDTO requestDTO = createUserRequestDTO();
         UsersResponseDTO responseDTO = createUserResponseDTO();
-        Users user = new Users();
+        Customer user = new Customer();
 
         Mockito.when(usersService.createProfile(any(UsersRequestDTO.class))).thenReturn(user);
 
@@ -131,7 +131,7 @@ public class UsersControllerTest {
         String email = "user@test.com";
         UsersRequestDTO requestDTO = createUserRequestDTO();
         UsersResponseDTO responseDTO = createUserResponseDTO();
-        Users user = new Users();
+        Customer user = new Customer();
 
         Mockito.when(usersService.updateProfile(eq(email), any(UsersRequestDTO.class))).thenReturn(user);
 
@@ -151,7 +151,7 @@ public class UsersControllerTest {
     void testViewUserProfile_Success() throws Exception {
         String email = "user@test.com";
         UsersResponseDTO responseDTO = createUserResponseDTO();
-        Users user = new Users();
+        Customer user = new Customer();
 
         Mockito.when(usersService.viewProfile(email)).thenReturn(user);
 

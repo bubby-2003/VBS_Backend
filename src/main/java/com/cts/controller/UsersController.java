@@ -17,7 +17,7 @@ import com.cts.mapper.VehicleMapper;
 import com.cts.dto.UsersResponseDTO;
 import com.cts.dto.UsersRequestDTO;
 
-import com.cts.entity.Users;
+import com.cts.entity.Customer;
 import com.cts.entity.Vehicles;
 import com.cts.mapper.UsersMapper;
 import com.cts.service.UsersService;
@@ -41,21 +41,21 @@ public class UsersController {
     @Operation(summary = "Create user profile", description = "Registers a new user profile with details like name, email, and contact info")
     @PostMapping
     public UsersResponseDTO createProfile(@RequestBody UsersRequestDTO userDto) {
-        Users savedUser = usersService.createProfile(userDto);
+        Customer savedUser = usersService.createProfile(userDto);
         return UsersMapper.toDTO(savedUser);
     }
 
     @Operation(summary = "Update user profile", description = "Updates an existing user profile using their email as the identifier")
     @PutMapping("/{email}")
     public UsersResponseDTO updateProfile(@PathVariable String email, @RequestBody UsersRequestDTO userDto) {
-        Users updatedUser = usersService.updateProfile(email, userDto);
+        Customer updatedUser = usersService.updateProfile(email, userDto);
         return UsersMapper.toDTO(updatedUser);
     }
 
     @Operation(summary = "View user profile", description = "Fetches details of a user profile by email")
     @GetMapping("/{email}")
     public UsersResponseDTO viewProfile(@PathVariable String email) {
-        Users user = usersService.viewProfile(email);
+        Customer user = usersService.viewProfile(email);
         return UsersMapper.toDTO(user);
     }
     @Operation(summary = "Register vehicle", description = "Registers a new vehicle under a user’s profile")
