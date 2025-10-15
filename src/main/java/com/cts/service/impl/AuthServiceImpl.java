@@ -76,8 +76,10 @@ public class AuthServiceImpl implements AuthService {
             throw new MissingFieldException("Registration failed: Admin role is not allowed to self-register");
         }
 
-        authRepository.findByEmail(authDto.getEmail()).orElseThrow(()->new ResourceNotFoundException("Registration failed: Email already exists"));
-       
+        // FIX: Throw if email already exists
+        if (authRepository.findByEmail(authDto.getEmail()).isPresent()) {
+            throw new ResourceNotFoundException("Registration failed: Email already exists");
+        }
 
         Auth auth = modelMapper.map(authDto, Auth.class);
         auth.setPassword(passenc.encode(authDto.getPassword()));
@@ -86,6 +88,7 @@ public class AuthServiceImpl implements AuthService {
         authRepository.save(auth);
         return "Registered successfully";
     }
+
 
 //    @Override
 //    public AuthResponseDTO update(String email, AuthRequestDTO authDto) {

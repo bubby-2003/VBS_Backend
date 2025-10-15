@@ -33,11 +33,9 @@ public class BookingServiceImpl implements BookingService {
     
     @Override
 	public Booking createBooking(BookingRequestDTO bookingDto) {
-        Customer user = userRepo.findByAuthEmail(bookingDto.getUserEmail());
-        if(user == null) {
-        	throw new ResourceNotFoundException("User not found with email: " + bookingDto.getUserEmail());
-        }
-        
+        Customer user = userRepo.findById(bookingDto.getCustomerId())
+        		.orElseThrow(()->new ResourceNotFoundException("User not found with email: " + bookingDto.getCustomerId()));
+
         Vehicles vehicle = vehicleRepo.findById(bookingDto.getVehicleId())
             .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with ID: " + bookingDto.getVehicleId()));
 
@@ -45,14 +43,9 @@ public class BookingServiceImpl implements BookingService {
             .orElseThrow(() -> new ResourceNotFoundException("Service Center not found with ID: " + bookingDto.getCenterId()));
 
         Mechanic mechanic = null;
-        if (bookingDto.getUserEmail() != null) {
-            mechanic = mechanicRepo.findByAuthEmail(bookingDto.getUserEmail());
-            if(mechanic == null)
-            	throw new ResourceNotFoundException("Mechanic not found with email: " + bookingDto.getUserEmail());
-        }
         Booking booking = BookingMapper.toEntity(bookingDto);
 
-        booking.setUser(user);
+        booking.setCustomer(user);
         booking.setVehicle(vehicle);
         booking.setServiceCenter(serviceCenter);
         booking.setMechanic(mechanic);

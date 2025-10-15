@@ -50,17 +50,6 @@ public class Mechanic {
     public enum Rating { Excellent, Good, Average, Poor }
     public enum VerificationStatus { yes, no, rejected }
     public enum Status { active, inActive }
-    
-	public Mechanic(String name, String expertise, String skills, String address, String phone , String email) {
-		super();
-		this.name = name;
-		this.expertise = expertise;
-		this.skills = skills;
-		this.address = address;
-		this.phone = phone;
-		Auth newAuth = new Auth(); 
-	    newAuth.setEmail(email);
-	    this.auth = newAuth;
-	}
+
     
 }

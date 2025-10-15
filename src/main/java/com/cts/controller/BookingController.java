@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cts.dto.BookingRequestDTO; 
-import com.cts.dto.BookingResponseDTO;
+import com.cts.dto.BookingResponseDTO; 
 import com.cts.entity.Booking;
 import com.cts.mapper.BookingMapper;
 import com.cts.service.BookingService;

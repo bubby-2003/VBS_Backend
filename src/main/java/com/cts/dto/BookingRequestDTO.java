@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BookingRequestDTO {
 
-    private String userEmail;
+    private int customerId;
     private Integer vehicleId;
     private Integer centerId;
     

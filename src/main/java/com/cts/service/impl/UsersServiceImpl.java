@@ -43,7 +43,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Customer updateProfile(int id, UsersRequestDTO updatedUserDto) {
        
-        Customer existingUser = usersRepository.findByAuthId(id)
+        Customer existingUser = usersRepository.findById(id)
         		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + id));
 
 
@@ -58,7 +58,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Customer viewProfile(int id) {
-    	Customer user = usersRepository.findByAuthId(id)
+    	Customer user = usersRepository.findById(id)
         		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + id));
         return user;
     }

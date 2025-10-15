@@ -14,3 +14,4 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("SELECT b.feedback FROM Booking b WHERE b.mechanic.id = :mechanicId AND b.feedback IS NOT NULL")
     List<String> findFeedbackByMechanic(Integer mechanicId);
 }
+ 

@@ -8,7 +8,7 @@ public class BookingMapper {
     public static BookingResponseDTO toDTO(Booking booking) {
         if (booking == null) {
             return null;
-        }
+        } 
 
         BookingResponseDTO dto = new BookingResponseDTO();
         dto.setBookingId(booking.getBookingId());
@@ -19,8 +19,8 @@ public class BookingMapper {
         dto.setIsVerified(booking.getIsVerified());
         dto.setStatus(booking.getStatus());
 
-        if (booking.getUser() != null) {
-            dto.setUserEmail(booking.getUser().getAuth().getEmail());
+        if (booking.getCustomer() != null) {
+            dto.setUserEmail(booking.getCustomer().getAuth().getEmail());
         }
         if (booking.getVehicle() != null) {
             dto.setVehicleId(booking.getVehicle().getVehicleId());

@@ -5,11 +5,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.cts.entity.Customer;
-import com.cts.entity.Vehicles;
  
 public interface VehicleRepository extends JpaRepository<Vehicles, Integer> {
 
 	List<Vehicles> findByCustomer(Customer customer);
-	List<Vehicles> findByCustomerUserAuthEmail(String email);
-	List<Vehicles> findByUserAuthId(int custmerId);
+//	List<Vehicles> findByCustomerUserAuthEmail(String email);
+	List<Vehicles> findByCustomerId(int custmerId);
 }

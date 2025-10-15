@@ -26,7 +26,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicles registerVehicle(VehicleRequestDTO vehicleDto, int id) {
-    	Customer user=userRepository.findByAuthId(id)
+    	Customer user=userRepository.findById(id)
         		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + id));
 
         Vehicles vehicle = new Vehicles();
@@ -39,7 +39,7 @@ public class VehicleServiceImpl implements VehicleService {
         vehicle.setEngine(vehicleDto.getEngine());
         vehicle.setAbs(vehicleDto.getAbs());
         vehicle.setDoors(vehicleDto.getDoors());
-        vehicle.setAc(vehicleDto.getAc());
+        vehicle.setAc(vehicleDto.getAc()); 
         vehicle.setTransmission(vehicleDto.getTransmission());
         vehicle.setFuel(vehicleDto.getFuel());
 
@@ -51,7 +51,7 @@ public class VehicleServiceImpl implements VehicleService {
         Vehicles existingVehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
 
-        Customer user = userRepository.findByAuthId(customerId)
+        Customer user = userRepository.findById(customerId)
         		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + customerId));
  
         existingVehicle.setCustomer(user);
@@ -72,7 +72,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicles viewVehicle(int customerId, Integer id) {
-    	userRepository.findByAuthId(customerId)
+    	userRepository.findById(customerId)
         		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + customerId));
 
         return vehicleRepository.findById(id)
@@ -83,7 +83,7 @@ public class VehicleServiceImpl implements VehicleService {
 	public List<Vehicles> getAllVehiclesById(int custmerId) {
 //		Users user=userRepository.findByAuthEmail(email);
 
-        List<Vehicles> vehicles = vehicleRepository.findByUserAuthId(custmerId);
+        List<Vehicles> vehicles = vehicleRepository.findByCustomerId(custmerId);
         if (vehicles == null || vehicles.isEmpty()) {
             throw new ResourceNotFoundException("No vehicles found for user: " + custmerId);
         }

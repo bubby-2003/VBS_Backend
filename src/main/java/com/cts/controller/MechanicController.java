@@ -48,7 +48,7 @@ public class MechanicController {
     )
     @GetMapping("/{id}")
     public ResponseEntity<MechanicResponseDTO> getMechanic(@PathVariable @Valid int id) {
-        Mechanic mechanic = mechanicService.getMechanicByEmail(id);
+        Mechanic mechanic = mechanicService.getMechanicById(id);
         return new ResponseEntity<>(MechanicMapper.toDTO(mechanic), HttpStatus.OK);
     }
 

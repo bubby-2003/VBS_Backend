@@ -13,7 +13,7 @@ import com.cts.repository.BookingRepository;
 import com.cts.repository.MechanicRepository;
 import com.cts.service.MechanicService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor; 
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +52,7 @@ public class MechanicServiceImpl implements MechanicService {
 
     @Override
     public Mechanic updateMechanic(int id, MechanicRequestDTO mechanicDto) {
-        Mechanic existing = mechrepo.findByAuthId(id)
+        Mechanic existing = mechrepo.findById(id)
         		.orElseThrow(()->new ResourceNotFoundException("Mechanic not found"));
 
         existing.setName(mechanicDto.getName());
@@ -74,7 +74,7 @@ public class MechanicServiceImpl implements MechanicService {
 
     @Override
     public Mechanic getMechanicById(int id) {
-    	Mechanic mechanic = mechrepo.findByAuthId(id)
+    	Mechanic mechanic = mechrepo.findById(id)
         		.orElseThrow(()->new ResourceNotFoundException("Mechanic not found"));
         return mechanic;
     }
