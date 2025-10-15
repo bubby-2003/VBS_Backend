@@ -13,17 +13,14 @@ import com.cts.repository.BookingRepository;
 import com.cts.repository.MechanicRepository;
 import com.cts.service.MechanicService;
 
-import lombok.RequiredArgsConstructor; 
+import lombok.AllArgsConstructor; 
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class MechanicServiceImpl implements MechanicService {
 
-	@Autowired
     private final AuthRepository authrepo;
-	@Autowired
     private final MechanicRepository mechrepo;
-	@Autowired
     private final BookingRepository bookrepo;
 
     @Override

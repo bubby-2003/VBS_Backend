@@ -1,7 +1,6 @@
 package com.cts.controller;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,20 +14,17 @@ import com.cts.service.ServiceCenterService;
 import com.cts.service.ServiceTypeService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/admin/center")
 @Tag(name = "Service Center Management", description = "APIs for managing service centers and their service types")
-
+@AllArgsConstructor
 public class ServiceCenterController {
     
-    @Autowired
     private ServiceCenterService service;
-    
-    @Autowired
     private ServiceTypeService typeService;
 
 

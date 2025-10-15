@@ -1,6 +1,5 @@
 package com.cts.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cts.dto.UsersRequestDTO;
@@ -11,14 +10,12 @@ import com.cts.repository.AuthRepository;
 import com.cts.repository.CustomerRepository;
 import com.cts.service.UsersService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UsersServiceImpl implements UsersService {
-	@Autowired
     private final CustomerRepository usersRepository;
-	@Autowired
     private final AuthRepository authRepository;
 
     @Override

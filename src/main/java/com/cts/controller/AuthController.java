@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +18,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Authentication Management", description = "Create Web APIs for Login and Register")
+@AllArgsConstructor
 public class AuthController {
 
-    @Autowired
     private AuthService authService;
 
     // --- GET ALL USERS ---

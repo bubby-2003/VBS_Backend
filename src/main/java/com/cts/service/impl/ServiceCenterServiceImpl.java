@@ -6,20 +6,21 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.cts.dto.ServiceCenterRequestDTO; // Import the Request DTO
+import com.cts.dto.ServiceCenterRequestDTO;
 import com.cts.dto.ServiceCenterResponseDTO;
 import com.cts.entity.ServiceCenter;
 import com.cts.exception.ResourceNotFoundException;
 import com.cts.repository.ServiceCenterRepository;
 import com.cts.service.ServiceCenterService;
-
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ServiceCenterServiceImpl implements ServiceCenterService {
     private final ServiceCenterRepository centerRepository;
     private final ModelMapper mapper;
+    
+    
     @Override
     public ServiceCenterResponseDTO createServiceCenter(ServiceCenterRequestDTO centerDto) {
     	

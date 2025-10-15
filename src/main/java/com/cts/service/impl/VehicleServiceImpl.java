@@ -13,15 +13,13 @@ import com.cts.repository.CustomerRepository;
 import com.cts.repository.VehicleRepository;
 import com.cts.service.VehicleService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class VehicleServiceImpl implements VehicleService {
 
-	@Autowired
     private final VehicleRepository vehicleRepository;
-	@Autowired
     private final CustomerRepository userRepository;
 
     @Override

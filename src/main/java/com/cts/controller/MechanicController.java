@@ -5,7 +5,6 @@ import com.cts.dto.MechanicResponseDTO;
 import com.cts.entity.Mechanic;
 import com.cts.mapper.MechanicMapper;
 import com.cts.service.MechanicService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/api/mechanic")
 @Tag(name = "Mechanic Management",description = "Create Web Api's for Mechanic Operations")
+@AllArgsConstructor
 public class MechanicController {
 
-    @Autowired
     private MechanicService mechanicService;
 
     @Operation(

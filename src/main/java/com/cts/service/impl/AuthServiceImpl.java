@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,26 +24,17 @@ import com.cts.service.AuthService;
 import com.cts.service.UserInfoConfigManager;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
-
-    @Autowired
+	
     private JWTUtil jwtUtil;
-
-    @Autowired
     private AuthRepository authRepository;
-
-    @Autowired
     private PasswordEncoder passenc;
-
-    @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private UserInfoConfigManager userInfoConfigManager;
 
     @Override
@@ -54,12 +44,6 @@ public class AuthServiceImpl implements AuthService {
                 .collect(Collectors.toList());
     }
 
-//    @Override
-//    public AuthResponseDTO getByEmail(String email) {
-//        Auth auth = authRepository.findByEmail(email)
-//                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with email: " + email));
-//        return modelMapper.map(auth, AuthResponseDTO.class);
-//    }
 
     @Override
     public AuthResponseDTO getById(int id) {
@@ -75,8 +59,6 @@ public class AuthServiceImpl implements AuthService {
         if (role == AuthRole.ADMIN) {
             throw new MissingFieldException("Registration failed: Admin role is not allowed to self-register");
         }
-
-        // FIX: Throw if email already exists
         if (authRepository.findByEmail(authDto.getEmail()).isPresent()) {
             throw new ResourceNotFoundException("Registration failed: Email already exists");
         }
@@ -89,19 +71,6 @@ public class AuthServiceImpl implements AuthService {
         return "Registered successfully";
     }
 
-
-//    @Override
-//    public AuthResponseDTO update(String email, AuthRequestDTO authDto) {
-//        Auth existing = authRepository.findById(email)
-//                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with email: " + email));
-//
-//        if (authDto.getPassword() != null && !authDto.getPassword().trim().isEmpty()) {
-//            existing.setPassword(passenc.encode(authDto.getPassword()));
-//        }
-//
-//        Auth updated = authRepository.save(existing);
-//        return modelMapper.map(updated, AuthResponseDTO.class);
-//    }
     @Override
     public AuthResponseDTO update(int id, AuthRequestDTO authDto) {
     	Auth existing = authRepository.findById(id)
@@ -124,18 +93,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDTO login(LoginDTO loginDTO) {
-        // Authenticate credentials using Spring Security
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
         );
-
-        // Load user details (email is used as username)
         UserDetails userDetails = userInfoConfigManager.loadUserByUsername(loginDTO.getEmail());
-
-        // Generate JWT token
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
-
-        // Return token in response DTO
         LoginResponseDTO loginResponse = new LoginResponseDTO();
         loginResponse.setAccessToken(jwt);
         return loginResponse;

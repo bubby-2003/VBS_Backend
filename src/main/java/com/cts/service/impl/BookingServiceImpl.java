@@ -19,10 +19,10 @@ import com.cts.repository.CustomerRepository;
 import com.cts.repository.VehicleRepository;
 import com.cts.service.BookingService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BookingServiceImpl implements BookingService {
 	
 	private final BookingRepository brepo;

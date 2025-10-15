@@ -16,16 +16,13 @@ import com.cts.repository.ServiceCenterRepository;
 import com.cts.repository.ServiceTypeRepository;
 import com.cts.service.ServiceTypeService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ServiceTypeServiceImpl implements ServiceTypeService {
-	@Autowired
 	private ServiceCenterRepository centerRepository;
-	@Autowired
 	private ServiceTypeRepository typeRepository;
-	@Autowired
 	private ModelMapper mapper;
 
 	@Override
