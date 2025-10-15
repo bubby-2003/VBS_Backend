@@ -1,15 +1,13 @@
+
 package com.cts.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.cts.enums.AuthRole;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthResponseDTO {
-    
     private String email;
-    private String role;
-//    private String token; 
+    private AuthRole role;
 }
