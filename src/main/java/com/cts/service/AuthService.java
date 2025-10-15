@@ -2,6 +2,9 @@ package com.cts.service;
 
 import com.cts.dto.AuthRequestDTO;
 import com.cts.dto.AuthResponseDTO;
+import com.cts.dto.LoginDTO;
+import com.cts.dto.LoginResponseDTO;
+
 import java.util.List;
 
 public interface AuthService {
@@ -10,5 +13,5 @@ public interface AuthService {
     String create(AuthRequestDTO authDto);
     AuthResponseDTO update(String email, AuthRequestDTO authDto);
     void delete(String email);
-    String login(AuthRequestDTO authDto);
+    LoginResponseDTO login(LoginDTO loginDto);
 }
