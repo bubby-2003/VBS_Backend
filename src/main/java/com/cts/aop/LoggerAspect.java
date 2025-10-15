@@ -18,11 +18,12 @@ public class LoggerAspect {
 	public void controllerMethods() {
 	}
 	
-	@Pointcut("execution(* com.cts.service.impl.*.*(..))")
+	@Pointcut("execution(* com.cts.service.*.*(..))")
 	public void serviceMethods() {
 	}
 	
-	private static final String ALL_LAYERS = "controllerMethods() || serviceImplMethods()";
+	private static final String ALL_LAYERS = "controllerMethods() || serviceMethods()";
+
 	
 	@Before(ALL_LAYERS)
 	public void logMethodEntry(JoinPoint jp) {
