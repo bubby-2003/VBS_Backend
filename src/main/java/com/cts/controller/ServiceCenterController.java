@@ -1,8 +1,6 @@
 package com.cts.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +10,6 @@ import com.cts.dto.ServiceCenterRequestDTO;
 import com.cts.dto.ServiceCenterResponseDTO;
 import com.cts.dto.ServiceTypeRequestDTO;
 import com.cts.dto.ServiceTypeResponseDTO;
-import com.cts.entity.ServiceCenter;
-import com.cts.entity.ServiceType;
-import com.cts.mapper.ServiceTypeMapper;
 
 import com.cts.service.ServiceCenterService;
 import com.cts.service.ServiceTypeService;
@@ -65,7 +60,7 @@ public class ServiceCenterController {
 
     @Operation(summary = "Update service center", description = "Updates details of a service center by its ID")
     @PutMapping("/{id}")
-    public ResponseEntity<ServiceCenterResponseDTO> updateCenterById(@RequestBody ServiceCenterRequestDTO centerDto, @PathVariable Integer id) {
+    public ResponseEntity<ServiceCenterResponseDTO> updateCenterById(@RequestBody @Valid ServiceCenterRequestDTO centerDto, @PathVariable Integer id) {
     	ServiceCenterResponseDTO updated = service.updateServiceCenterById(centerDto, id); 
     	return new ResponseEntity<ServiceCenterResponseDTO>(updated,HttpStatus.OK);
     }
@@ -73,33 +68,31 @@ public class ServiceCenterController {
 
     @Operation(summary = "Add service type", description = "Adds a new service type (e.g., oil change, tire replacement) to a service center")
     @PostMapping("/{id}/service")
-    public ResponseEntity<ServiceTypeResponseDTO> createServiceType(@RequestBody ServiceTypeRequestDTO serviceTypeDto, @PathVariable Integer id) {
-        ServiceType newServiceType = typeService.addServiceType(serviceTypeDto, id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ServiceTypeMapper.toDTO(newServiceType));
+    public ResponseEntity<ServiceTypeResponseDTO> createServiceType(@RequestBody @Valid ServiceTypeRequestDTO serviceTypeDto, @PathVariable Integer id) {
+    	ServiceTypeResponseDTO newServiceType = typeService.addServiceType(serviceTypeDto, id);
+        return new ResponseEntity<ServiceTypeResponseDTO>(newServiceType,HttpStatus.CREATED);
     }
     
     @Operation(summary = "Get all service types", description = "Fetches all service types offered by a specific service center")
     @GetMapping("/{id}/service")
     public ResponseEntity<List<ServiceTypeResponseDTO>> getAllServiceTypes(@PathVariable Integer id) {
-        List<ServiceType> serviceTypes = typeService.getAllServiceTypes(id);
-        List<ServiceTypeResponseDTO> serviceTypeDtos = serviceTypes.stream()
-            .map(ServiceTypeMapper::toDTO)
-            .collect(Collectors.toList());
-        return ResponseEntity.ok(serviceTypeDtos);
+        List<ServiceTypeResponseDTO> serviceTypes = typeService.getAllServiceTypes(id);
+        
+        return new ResponseEntity<List<ServiceTypeResponseDTO>>(serviceTypes,HttpStatus.OK);
     }
 
     @Operation(summary = "Delete service type", description = "Deletes a specific service type from a service center")
     @DeleteMapping("/{id}/service/{typeId}")
     public ResponseEntity<Void> deleteServiceTypeById(@PathVariable Integer typeId, @PathVariable Integer id) {
         typeService.deleteServiceTypeById(typeId, id);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "Get service type by ID", description = "Fetches details of a specific service type from a service center")
     @GetMapping("/{id}/service/{typeId}")
     public ResponseEntity<ServiceTypeResponseDTO> getServiceTypeId(@PathVariable Integer typeId, @PathVariable Integer id) {
-        ServiceType serviceType = typeService.getServiceTypeById(typeId, id);
-        return ResponseEntity.ok(ServiceTypeMapper.toDTO(serviceType));
+    	ServiceTypeResponseDTO serviceType = typeService.getServiceTypeById(typeId, id);
+        return new ResponseEntity<ServiceTypeResponseDTO>(serviceType,HttpStatus.OK);
     }
 
     @Operation(summary = "Update service type", description = "Updates details of a specific service type in a service center")
@@ -107,7 +100,7 @@ public class ServiceCenterController {
     public ResponseEntity<ServiceTypeResponseDTO> updateServiceTypeById(@RequestBody ServiceTypeRequestDTO serviceTypeDto,
                                                              @PathVariable Integer typeId,
                                                              @PathVariable Integer id) {
-        ServiceType updated = typeService.updateServiceType(typeId, id, serviceTypeDto); 
-        return ResponseEntity.ok(ServiceTypeMapper.toDTO(updated));
+    	ServiceTypeResponseDTO updatedServiceType = typeService.updateServiceType(typeId, id, serviceTypeDto); 
+        return new ResponseEntity<ServiceTypeResponseDTO>(updatedServiceType,HttpStatus.OK);
     }
 }

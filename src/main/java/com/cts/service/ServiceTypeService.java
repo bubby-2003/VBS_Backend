@@ -3,13 +3,13 @@ package com.cts.service;
 import java.util.List;
 
 import com.cts.dto.ServiceTypeRequestDTO;
-import com.cts.entity.ServiceType;
+import com.cts.dto.ServiceTypeResponseDTO;
 
 public interface ServiceTypeService {
-    ServiceType addServiceType(ServiceTypeRequestDTO serviceTypeDto, Integer serviceCenterId);
-    List<ServiceType> getAllServiceTypes(Integer serviceCenterId);
-    ServiceType getServiceTypeById(Integer serviceTypeId, Integer serviceCenterId);
+	ServiceTypeResponseDTO addServiceType(ServiceTypeRequestDTO serviceTypeDto, Integer serviceCenterId);
+    List<ServiceTypeResponseDTO> getAllServiceTypes(Integer serviceCenterId);
+    ServiceTypeResponseDTO getServiceTypeById(Integer serviceTypeId, Integer serviceCenterId);
     boolean deleteServiceTypeById(Integer serviceTypeId, Integer serviceCenterId);
-    ServiceType updateServiceType(Integer serviceTypeId, Integer serviceCenterId, ServiceTypeRequestDTO updatedTypeDto);
+    ServiceTypeResponseDTO updateServiceType(Integer serviceTypeId, Integer serviceCenterId, ServiceTypeRequestDTO updatedTypeDto);
 
 }
