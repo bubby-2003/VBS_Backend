@@ -4,13 +4,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import com.cts.entity.Auth;
 import com.cts.repository.AuthRepository;
-
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-@Data
+
 @Service
 @RequiredArgsConstructor
 public class UserInfoConfigManager implements UserDetailsService {
@@ -29,4 +26,3 @@ public class UserInfoConfigManager implements UserDetailsService {
                 .build();
     }
 }
-

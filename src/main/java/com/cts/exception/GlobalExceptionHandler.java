@@ -38,4 +38,6 @@ public class GlobalExceptionHandler {
         log.warn("Missing field error: {}", ex.getMessage());
         return new ResponseEntity<>("Missing field: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    
+    
 }

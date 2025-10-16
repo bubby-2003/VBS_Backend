@@ -22,18 +22,19 @@ import com.cts.exception.ResourceNotFoundException;
 import com.cts.repository.AuthRepository;
 import com.cts.service.AuthService;
 import com.cts.service.UserInfoConfigManager;
+
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
-	
-    private JWTUtil jwtUtil;
-    private AuthRepository authRepository;
-    private PasswordEncoder passenc;
-    private ModelMapper modelMapper;
-    private AuthenticationManager authenticationManager;
-    private UserInfoConfigManager userInfoConfigManager;
+
+    private final JWTUtil jwtUtil;
+    private final AuthRepository authRepository;
+    private final PasswordEncoder passenc;
+    private final ModelMapper modelMapper;
+    private final AuthenticationManager authenticationManager;
+    private final UserInfoConfigManager userInfoConfigManager;
 
     @Override
     public List<AuthResponseDTO> getAll() {
@@ -42,14 +43,13 @@ public class AuthServiceImpl implements AuthService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public AuthResponseDTO getById(int id) {
         Auth auth = authRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Auth not found with Id: " + id));
         return modelMapper.map(auth, AuthResponseDTO.class);
     }
-    
+
     @Override
     public String create(AuthRequestDTO authDto) {
         AuthRole role = authDto.getRole();
@@ -71,15 +71,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDTO update(int id, AuthRequestDTO authDto) {
-    	Auth existing = authRepository.findById(id)
-    			.orElseThrow(() -> new ResourceNotFoundException("Auth not found with Id: " + id));
-    	
-    	if (authDto.getPassword() != null && !authDto.getPassword().trim().isEmpty()) {
-    		existing.setPassword(passenc.encode(authDto.getPassword()));
-    	}
-    	
-    	Auth updated = authRepository.save(existing);
-    	return modelMapper.map(updated, AuthResponseDTO.class);
+        Auth existing = authRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Auth not found with Id: " + id));
+
+        if (authDto.getPassword() != null && !authDto.getPassword().trim().isEmpty()) {
+            existing.setPassword(passenc.encode(authDto.getPassword()));
+        }
+
+        Auth updated = authRepository.save(existing);
+        return modelMapper.map(updated, AuthResponseDTO.class);
     }
 
     @Override
@@ -91,13 +91,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDTO login(LoginDTO loginDTO) {
+        // Authenticate user
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
+                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
         );
-        UserDetails userDetails = userInfoConfigManager.loadUserByUsername(loginDTO.getEmail());
-        String jwt = jwtUtil.generateToken(userDetails.getUsername());
+
+        // Load user details
+        Auth auth = authRepository.findByEmail(loginDTO.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + loginDTO.getEmail()));
+
+        // Generate JWT with full claims
+        String jwt = jwtUtil.generateToken(auth);
+
         LoginResponseDTO loginResponse = new LoginResponseDTO();
         loginResponse.setAccessToken(jwt);
         return loginResponse;
-    }	
+    }
 }
