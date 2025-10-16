@@ -22,8 +22,6 @@ import com.cts.exception.ResourceNotFoundException;
 import com.cts.repository.AuthRepository;
 import com.cts.service.AuthService;
 import com.cts.service.UserInfoConfigManager;
-
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -101,9 +99,5 @@ public class AuthServiceImpl implements AuthService {
         LoginResponseDTO loginResponse = new LoginResponseDTO();
         loginResponse.setAccessToken(jwt);
         return loginResponse;
-    }
-
-	
-
-	
+    }	
 }

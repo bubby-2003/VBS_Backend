@@ -44,14 +44,6 @@ public class AuthController {
         return ResponseEntity.status(status).body(result);
     }
 
-    @Operation(summary = "Update user", description = "Updates an existing Auth user by email")
-    @PutMapping("/{id}")
-    public ResponseEntity<AuthResponseDTO> update(@PathVariable int id,
-                                                  @RequestBody @Valid AuthRequestDTO authDto) {
-        AuthResponseDTO updatedDto = authService.update(id, authDto);
-        return ResponseEntity.ok(updatedDto);
-    }
-
     @Operation(summary = "Delete user", description = "Deletes an Auth user by email")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {

@@ -1,11 +1,13 @@
 package com.cts.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.cts.dto.VehicleRequestDTO;
+import com.cts.dto.VehicleResponseDTO;
 import com.cts.entity.Customer;
 import com.cts.entity.Vehicles;
 import com.cts.exception.ResourceNotFoundException;
@@ -21,71 +23,55 @@ public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
     private final CustomerRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public Vehicles registerVehicle(VehicleRequestDTO vehicleDto, int id) {
-    	Customer user=userRepository.findById(id)
-        		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + id));
+    public VehicleResponseDTO registerVehicle(VehicleRequestDTO vehicleDto, int customerId) {
+        Customer user = userRepository.findById(customerId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with Id: " + customerId));
 
-        Vehicles vehicle = new Vehicles();
+        Vehicles vehicle = modelMapper.map(vehicleDto, Vehicles.class);
         vehicle.setCustomer(user);
-        vehicle.setMake(vehicleDto.getMake());
-        vehicle.setModel(vehicleDto.getModel());
-        vehicle.setYear(vehicleDto.getYear());
-        vehicle.setRegistrationNumber(vehicleDto.getRegistrationNumber());
-        vehicle.setVehicleType(vehicleDto.getVehicleType());
-        vehicle.setEngine(vehicleDto.getEngine());
-        vehicle.setAbs(vehicleDto.getAbs());
-        vehicle.setDoors(vehicleDto.getDoors());
-        vehicle.setAc(vehicleDto.getAc()); 
-        vehicle.setTransmission(vehicleDto.getTransmission());
-        vehicle.setFuel(vehicleDto.getFuel());
 
-        return vehicleRepository.save(vehicle);
+        Vehicles savedVehicle = vehicleRepository.save(vehicle);
+        return modelMapper.map(savedVehicle, VehicleResponseDTO.class);
     }
 
     @Override
-    public Vehicles updateVehicle(int customerId, Integer id, VehicleRequestDTO vehicleDto) {
-        Vehicles existingVehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
+    public VehicleResponseDTO updateVehicle(int customerId, Integer vehicleId, VehicleRequestDTO vehicleDto) {
+        Vehicles existingVehicle = vehicleRepository.findById(vehicleId)
+            .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + vehicleId));
 
         Customer user = userRepository.findById(customerId)
-        		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + customerId));
- 
-        existingVehicle.setCustomer(user);
-        existingVehicle.setMake(vehicleDto.getMake());
-        existingVehicle.setModel(vehicleDto.getModel());
-        existingVehicle.setYear(vehicleDto.getYear());
-        existingVehicle.setRegistrationNumber(vehicleDto.getRegistrationNumber());
-        existingVehicle.setVehicleType(vehicleDto.getVehicleType());
-        existingVehicle.setEngine(vehicleDto.getEngine());
-        existingVehicle.setAbs(vehicleDto.getAbs());
-        existingVehicle.setDoors(vehicleDto.getDoors());
-        existingVehicle.setAc(vehicleDto.getAc());
-        existingVehicle.setTransmission(vehicleDto.getTransmission());
-        existingVehicle.setFuel(vehicleDto.getFuel());
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with Id: " + customerId));
 
-        return vehicleRepository.save(existingVehicle);
+        modelMapper.map(vehicleDto, existingVehicle);
+        existingVehicle.setCustomer(user);
+
+        Vehicles updatedVehicle = vehicleRepository.save(existingVehicle);
+        return modelMapper.map(updatedVehicle, VehicleResponseDTO.class);
     }
 
     @Override
-    public Vehicles viewVehicle(int customerId, Integer id) {
-    	userRepository.findById(customerId)
-        		.orElseThrow(()->new ResourceNotFoundException("User not found with Id: " + customerId));
+    public VehicleResponseDTO viewVehicle(int customerId, Integer vehicleId) {
+        userRepository.findById(customerId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with Id: " + customerId));
 
-        return vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
+        Vehicles vehicle = vehicleRepository.findById(vehicleId)
+            .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + vehicleId));
+
+        return modelMapper.map(vehicle, VehicleResponseDTO.class);
     }
 
-	@Override
-	public List<Vehicles> getAllVehiclesById(int custmerId) {
-//		Users user=userRepository.findByAuthEmail(email);
-
-        List<Vehicles> vehicles = vehicleRepository.findByCustomerId(custmerId);
+    @Override
+    public List<VehicleResponseDTO> getAllVehiclesById(int customerId) {
+        List<Vehicles> vehicles = vehicleRepository.findByCustomerId(customerId);
         if (vehicles == null || vehicles.isEmpty()) {
-            throw new ResourceNotFoundException("No vehicles found for user: " + custmerId);
+            throw new ResourceNotFoundException("No vehicles found for user: " + customerId);
         }
 
-        return vehicles;
+        return vehicles.stream()
+            .map(vehicle -> modelMapper.map(vehicle, VehicleResponseDTO.class))
+            .collect(Collectors.toList());
     }
 }
