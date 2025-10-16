@@ -7,7 +7,6 @@ import com.cts.dto.LoginResponseDTO;
 import com.cts.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.*;
@@ -23,7 +22,6 @@ public class AuthController {
 
     private AuthService authService;
 
-    // --- GET ALL USERS ---
     @Operation(summary = "Get all users", description = "Fetches a list of all registered Auth users")
     @GetMapping
     public ResponseEntity<List<AuthResponseDTO>> getAll() {
@@ -31,7 +29,6 @@ public class AuthController {
         return ResponseEntity.ok(authList);
     }
 
-    // --- GET USER BY EMAIL ---
     @Operation(summary = "Get user by email", description = "Fetches a single Auth user by their email address")
     @GetMapping("/{id}")
     public ResponseEntity<AuthResponseDTO> getByUserId(@PathVariable int  id) {
@@ -39,7 +36,6 @@ public class AuthController {
         return ResponseEntity.ok(authDto);
     }
 
-    // --- REGISTER NEW USER ---
     @Operation(summary = "Register a new user", description = "Registers a new Auth user with email, password, and role")
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid AuthRequestDTO authDto) {
@@ -48,7 +44,6 @@ public class AuthController {
         return ResponseEntity.status(status).body(result);
     }
 
-    // --- UPDATE USER ---
     @Operation(summary = "Update user", description = "Updates an existing Auth user by email")
     @PutMapping("/{id}")
     public ResponseEntity<AuthResponseDTO> update(@PathVariable int id,
@@ -57,7 +52,6 @@ public class AuthController {
         return ResponseEntity.ok(updatedDto);
     }
 
-    // --- DELETE USER ---
     @Operation(summary = "Delete user", description = "Deletes an Auth user by email")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
@@ -65,7 +59,6 @@ public class AuthController {
         return ResponseEntity.ok("Deleted successfully");
     }
 
-    // --- LOGIN USER ---
     @Operation(summary = "Login user", description = "Authenticates a user with email and password")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginDTO loginDto) {

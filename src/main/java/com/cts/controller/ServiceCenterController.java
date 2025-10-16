@@ -4,15 +4,12 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.cts.dto.ServiceCenterRequestDTO;
 import com.cts.dto.ServiceCenterResponseDTO;
 import com.cts.dto.ServiceTypeRequestDTO;
 import com.cts.dto.ServiceTypeResponseDTO;
-
 import com.cts.service.ServiceCenterService;
 import com.cts.service.ServiceTypeService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -95,7 +92,7 @@ public class ServiceCenterController {
 
     @Operation(summary = "Update service type", description = "Updates details of a specific service type in a service center")
     @PutMapping("/{id}/service/{typeId}")
-    public ResponseEntity<ServiceTypeResponseDTO> updateServiceTypeById(@RequestBody ServiceTypeRequestDTO serviceTypeDto,
+    public ResponseEntity<ServiceTypeResponseDTO> updateServiceTypeById(@RequestBody @Valid ServiceTypeRequestDTO serviceTypeDto,
                                                              @PathVariable Integer typeId,
                                                              @PathVariable Integer id) {
     	ServiceTypeResponseDTO updatedServiceType = typeService.updateServiceType(typeId, id, serviceTypeDto); 

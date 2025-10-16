@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cts.dto.VehicleRequestDTO;
 import com.cts.dto.VehicleResponseDTO;
 import com.cts.mapper.VehicleMapper;
-
 import com.cts.dto.UsersResponseDTO;
 import com.cts.dto.UsersRequestDTO;
-
 import com.cts.entity.Customer;
 import com.cts.entity.Vehicles;
 import com.cts.mapper.UsersMapper;
@@ -24,6 +22,7 @@ import com.cts.service.VehicleService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -37,14 +36,14 @@ public class UsersController {
 
     @Operation(summary = "Create user profile", description = "Registers a new user profile with details like name, email, and contact info")
     @PostMapping
-    public UsersResponseDTO createProfile(@RequestBody UsersRequestDTO userDto) {
+    public UsersResponseDTO createProfile(@RequestBody @Valid UsersRequestDTO userDto) {
         Customer savedUser = usersService.createProfile(userDto);
         return UsersMapper.toDTO(savedUser);
     }
 
     @Operation(summary = "Update user profile", description = "Updates an existing user profile using their email as the identifier")
     @PutMapping("/{id}")
-    public UsersResponseDTO updateProfile(@PathVariable int id, @RequestBody UsersRequestDTO userDto) {
+    public UsersResponseDTO updateProfile(@PathVariable int id, @RequestBody @Valid UsersRequestDTO userDto) {
         Customer updatedUser = usersService.updateProfile(id, userDto);
         return UsersMapper.toDTO(updatedUser);
     }
@@ -55,15 +54,17 @@ public class UsersController {
         Customer user = usersService.viewProfile(id);
         return UsersMapper.toDTO(user);
     }
+    
     @Operation(summary = "Register vehicle", description = "Registers a new vehicle under a user’s profile")
     @PostMapping("/{id}/vehicle")
-    public VehicleResponseDTO registerVehicle(@RequestBody VehicleRequestDTO vehicleDto, @PathVariable int id) {
+    public VehicleResponseDTO registerVehicle(@RequestBody @Valid VehicleRequestDTO vehicleDto, @PathVariable int id) {
         Vehicles savedVehicle = vehicleService.registerVehicle(vehicleDto, id);
         return VehicleMapper.toDTO(savedVehicle);
     }
+    
     @Operation(summary = "Update vehicle", description = "Updates details of a specific vehicle belonging to a user")
     @PutMapping("/{customerId}/vehicle/{id}")
-    public VehicleResponseDTO updateVehicle(@PathVariable int customerId, @PathVariable Integer id, @RequestBody VehicleRequestDTO vehicleDto) {
+    public VehicleResponseDTO updateVehicle(@PathVariable int customerId, @PathVariable Integer id, @RequestBody @Valid VehicleRequestDTO vehicleDto) {
         Vehicles updatedVehicle = vehicleService.updateVehicle(customerId, id, vehicleDto);
         return VehicleMapper.toDTO(updatedVehicle);
     } 
@@ -84,6 +85,4 @@ public class UsersController {
                        .map(VehicleMapper::toDTO)
                        .toList();
     }
-
-
 }

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.cts.dto.BookingRequestDTO; 
 import com.cts.dto.BookingResponseDTO; 
 import com.cts.entity.Booking;
@@ -17,6 +16,7 @@ import com.cts.service.BookingService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -32,11 +32,9 @@ public class BookingController {
         description = "Creates a new booking record with the provided booking details"
     )
     @PostMapping
-    public ResponseEntity<BookingResponseDTO> createBook(@RequestBody BookingRequestDTO bookingDto) {
+    public ResponseEntity<BookingResponseDTO> createBook(@RequestBody @Valid BookingRequestDTO bookingDto) {
         Booking booking = sbook.createBooking(bookingDto);
-        
         BookingResponseDTO responseDto = BookingMapper.toDTO(booking);
-        
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
@@ -46,11 +44,8 @@ public class BookingController {
     )
     @GetMapping("/{id}")
     public ResponseEntity<BookingResponseDTO> viewBook(@PathVariable Integer id) {
-      
          Booking book = sbook.getBookingDetailsById(id);
-         
          BookingResponseDTO responseDto = BookingMapper.toDTO(book);
-         
          return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

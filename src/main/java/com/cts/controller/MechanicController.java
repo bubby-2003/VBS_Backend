@@ -8,11 +8,12 @@ import com.cts.service.MechanicService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+
+
 @RestController
 @RequestMapping("/api/mechanic")
 @Tag(name = "Mechanic Management",description = "Create Web Api's for Mechanic Operations")
@@ -25,9 +26,8 @@ public class MechanicController {
         summary = "Create a new mechanic",
         description = "Registers a new mechanic with details such as name, email, specialization, and availability"
     )
-    
     @PostMapping
-    public ResponseEntity<MechanicResponseDTO> createMechanic(@RequestBody MechanicRequestDTO mechanicDto) {
+    public ResponseEntity<MechanicResponseDTO> createMechanic(@RequestBody @Valid MechanicRequestDTO mechanicDto) {
         Mechanic mechanic = mechanicService.createMechanic(mechanicDto);
         return new ResponseEntity<>(MechanicMapper.toDTO(mechanic), HttpStatus.CREATED);
     }
@@ -37,7 +37,7 @@ public class MechanicController {
           description = "Updates an existing mechanic’s information using their email as the identifier"
       )
     @PutMapping("/{id}")
-    public ResponseEntity<MechanicResponseDTO> updateMechanic(@PathVariable int id, @RequestBody MechanicRequestDTO mechanicDto) {
+    public ResponseEntity<MechanicResponseDTO> updateMechanic(@PathVariable int id, @RequestBody @Valid MechanicRequestDTO mechanicDto) {
         Mechanic mechanic = mechanicService.updateMechanic(id, mechanicDto);
         return new ResponseEntity<>(MechanicMapper.toDTO(mechanic), HttpStatus.OK);
     }
